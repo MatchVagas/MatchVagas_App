@@ -1,3 +1,14 @@
 <resources>
-    <string name="app_name">Matchvagas App</string>
+    <string name="app_name">MatchVagas</string>
+    <string name="login_title">Entrar</string>
+    <string name="login_subtitle">Acesse sua conta para continuar</string>
+    <string name="hint_email">E-mail</string>
+    <string name="hint_password">Senha</string>
+    <string name="btn_login">Entrar</string>
+    <string name="forgot_password">Esqueceu a senha?</string>
+    <string name="no_account">Não tem uma conta?</string>
+    <string name="register">Cadastre-se</string>
+    <string name="app_tagline">Conectando talentos a oportunidades</string>
+    <string name="logo_desc">Logo MatchVagas</string>
+    <string name="divider_or">ou</string>
 </resources>
