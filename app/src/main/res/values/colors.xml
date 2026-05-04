@@ -13,4 +13,12 @@
     <color name="surface">#FFFFFF</color>
     <color name="error">#B3261E</color>
     <color name="divider">#E0E0E0</color>
+    <color name="warning">#FF9800</color>
+    <color name="primary_header">#1A3A6B</color>
+    <color name="status_analise_bg">#FFF3E0</color>
+    <color name="status_analise_text">#E65100</color>
+    <color name="status_entrevista_bg">#E8F5E9</color>
+    <color name="status_entrevista_text">#2E7D32</color>
+    <color name="status_salvo_bg">#E8F0FE</color>
+    <color name="status_salvo_text">#1557B0</color>
 </resources>

@@ -11,4 +11,89 @@
     <string name="app_tagline">Conectando talentos a oportunidades</string>
     <string name="logo_desc">Logo MatchVagas</string>
     <string name="divider_or">ou</string>
+    <string name="dashboard_candidato">Dashboard do Candidato</string>
+    <string name="navibar_home">Home</string>
+    <string name="navibar_search">Buscar</string>
+    <string name="navibar_vagas">Vagas</string>
+    <string name="navibar_perfil">Perfil</string>
+
+    <!-- Home Fragment -->
+    <string name="home_greeting">Olá, João!</string>
+    <string name="home_subtitle">Veja as oportunidades de hoje</string>
+    <string name="stat_candidaturas">Candidaturas</string>
+    <string name="stat_visualizacoes">Visualizações</string>
+    <string name="stat_matches">Matches</string>
+    <string name="vagas_recomendadas">Vagas Recomendadas</string>
+    <string name="ver_todas">Ver todas</string>
+    <string name="candidatar">Candidatar-se</string>
+    <string name="salvar">Salvar</string>
+
+    <!-- Buscar Fragment -->
+    <string name="buscar_hint">Buscar vagas, empresas…</string>
+    <string name="resultados">resultados encontrados</string>
+    <string name="chip_todos">Todos</string>
+    <string name="chip_tecnologia">Tecnologia</string>
+    <string name="chip_remoto">Remoto</string>
+    <string name="chip_clt">CLT</string>
+    <string name="chip_estagio">Estágio</string>
+
+    <!-- Vagas Fragment -->
+    <string name="tab_candidaturas">Candidaturas (5)</string>
+    <string name="tab_salvas">Salvas (8)</string>
+    <string name="status_em_analise">Em Análise</string>
+    <string name="status_entrevista">Entrevista</string>
+    <string name="status_aprovado">Aprovado</string>
+    <string name="status_reprovado">Reprovado</string>
+    <string name="candidatou_em">Candidatou-se</string>
+    <string name="salvo_em">Salvo</string>
+    <string name="ver_detalhes">Ver detalhes</string>
+
+    <!-- Perfil Fragment -->
+    <string name="perfil_nome">João Silva</string>
+    <string name="perfil_cargo">Desenvolvedor Android</string>
+    <string name="completar_perfil">Complete seu perfil</string>
+    <string name="perfil_progresso">Seu perfil está 65%% completo</string>
+    <string name="perfil_dica">Adicione sua experiência e habilidades para aumentar suas chances</string>
+    <string name="completar_agora">Completar agora</string>
+    <string name="dados_pessoais">Dados Pessoais</string>
+    <string name="dados_pessoais_sub">Nome, telefone, endereço</string>
+    <string name="formacao">Formação Acadêmica</string>
+    <string name="formacao_sub">Curso de Análise e Desenvolvimento de Sistemas</string>
+    <string name="experiencia">Experiência Profissional</string>
+    <string name="experiencia_sub">2 experiências adicionadas</string>
+    <string name="habilidades">Habilidades</string>
+    <string name="habilidades_sub">Adicione suas habilidades técnicas</string>
+    <string name="editar_perfil">Editar Perfil</string>
+    <string name="sair">Sair da conta</string>
+    <string name="secao_completa">Completo</string>
+    <string name="secao_incompleta">Incompleto</string>
+    <string name="secao_em_progresso">Em progresso</string>
+    <string name="avatar_desc">Foto de perfil</string>
+
+    <!-- Job cards data -->
+    <string name="vaga_android">Desenvolvedor Android</string>
+    <string name="vaga_backend">Engenheiro Backend</string>
+    <string name="vaga_fullstack">Desenvolvedor Full Stack</string>
+    <string name="vaga_ux">UX Designer</string>
+    <string name="vaga_data">Analista de Dados</string>
+    <string name="empresa_tech">TechCorp Brasil</string>
+    <string name="empresa_startup">Startup XYZ</string>
+    <string name="empresa_bank">Banco Digital</string>
+    <string name="empresa_design">Design Studio</string>
+    <string name="empresa_analytics">Analytics Corp</string>
+    <string name="local_sp">São Paulo, SP</string>
+    <string name="local_remoto">Remoto</string>
+    <string name="local_rj">Rio de Janeiro, RJ</string>
+    <string name="tipo_clt">CLT</string>
+    <string name="tipo_pj">PJ</string>
+    <string name="salario_1">R$ 6.000 – R$ 9.000</string>
+    <string name="salario_2">R$ 8.000 – R$ 12.000</string>
+    <string name="salario_3">R$ 7.000 – R$ 10.000</string>
+    <string name="match_92">92% Match</string>
+    <string name="match_87">87% Match</string>
+    <string name="match_79">79% Match</string>
+    <string name="ha_2dias">há 2 dias</string>
+    <string name="ha_5dias">há 5 dias</string>
+    <string name="ha_1semana">há 1 semana</string>
+    <string name="ha_3dias">há 3 dias</string>
 </resources>
