@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         );
 
         tvRegister.setOnClickListener(v ->
-            Toast.makeText(this, "Cadastro em breve", Toast.LENGTH_SHORT).show()
+            startActivity(new Intent(this, CadastroActivity.class))
         );
     }
 
@@ -73,6 +73,8 @@ public class LoginActivity extends AppCompatActivity {
         if (!valid) return;
 
         // TODO: integrar com backend de autenticação
-        Toast.makeText(this, "Entrando...", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, DashbordCadActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 }

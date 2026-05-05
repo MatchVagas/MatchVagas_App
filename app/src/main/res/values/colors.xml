@@ -21,4 +21,5 @@
     <color name="status_entrevista_text">#2E7D32</color>
     <color name="status_salvo_bg">#E8F0FE</color>
     <color name="status_salvo_text">#1557B0</color>
+    <color name="step_inactive">#3A5A8A</color>
 </resources>
