@@ -70,6 +70,11 @@
     <string name="secao_em_progresso">Em progresso</string>
     <string name="avatar_desc">Foto de perfil</string>
 
+    <!-- Detalhes Vagas -->
+    <string name="job_image_desc">Imagem da vaga</string>
+    <string name="favorite">Favoritar vaga</string>
+    <string name="share">Compartilhar vaga</string>
+
     <!-- Job cards data -->
     <string name="vaga_android">Desenvolvedor Android</string>
     <string name="vaga_backend">Engenheiro Backend</string>

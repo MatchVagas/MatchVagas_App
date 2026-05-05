@@ -26,7 +26,7 @@
             app:boxBackgroundColor="@color/surface"
             app:boxStrokeColor="@color/surface"
             app:hintTextColor="@color/text_hint"
-            app:startIconDrawable="@drawable/baseline_search_24"
+            app:startIconDrawable="@drawable/ic_pesquisar"
             app:startIconTint="@color/text_hint">
 
             <com.google.android.material.textfield.TextInputEditText

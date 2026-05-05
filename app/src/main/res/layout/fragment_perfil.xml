@@ -163,7 +163,7 @@
                         android:layout_height="40dp"
                         android:background="@drawable/bg_avatar"
                         android:padding="8dp"
-                        android:src="@drawable/baseline_perm_identity_24"
+                        android:src="@drawable/ic_perfil"
                         android:tint="@color/white"
                         android:contentDescription="@null" />
 
@@ -226,7 +226,7 @@
                         android:background="@drawable/bg_avatar"
                         android:backgroundTint="@color/accent"
                         android:padding="8dp"
-                        android:src="@drawable/article_24px"
+                        android:src="@drawable/ic_vagas"
                         android:tint="@color/white"
                         android:contentDescription="@null" />
 
@@ -289,7 +289,7 @@
                         android:background="@drawable/bg_avatar"
                         android:backgroundTint="@color/warning"
                         android:padding="8dp"
-                        android:src="@drawable/home_24px"
+                        android:src="@drawable/ic_home"
                         android:tint="@color/white"
                         android:contentDescription="@null" />
 
@@ -352,7 +352,7 @@
                         android:background="@drawable/bg_avatar"
                         android:backgroundTint="#9C27B0"
                         android:padding="8dp"
-                        android:src="@drawable/baseline_search_24"
+                        android:src="@drawable/ic_pesquisar"
                         android:tint="@color/white"
                         android:contentDescription="@null" />
 

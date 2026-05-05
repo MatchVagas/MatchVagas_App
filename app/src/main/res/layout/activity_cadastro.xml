@@ -183,7 +183,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="Nome completo"
-                            app:startIconDrawable="@drawable/baseline_perm_identity_24"
+                            app:startIconDrawable="@drawable/ic_perfil"
                             android:layout_marginBottom="12dp">
 
                             <com.google.android.material.textfield.TextInputEditText
