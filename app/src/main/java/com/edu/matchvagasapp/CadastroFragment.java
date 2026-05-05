@@ -1,9 +1,10 @@
 package com.edu.matchvagasapp;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -11,12 +12,14 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.ChipGroup;
@@ -25,7 +28,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-public class CadastroActivity extends AppCompatActivity {
+public class CadastroFragment extends Fragment {
 
     private int currentStep = 0;
 
@@ -51,23 +54,28 @@ public class CadastroActivity extends AppCompatActivity {
     private AutoCompleteTextView etEstado;
     private MaterialSwitch switchRemoto, switchRelocacao;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        setContentView(R.layout.activity_cadastro);
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.activity_cadastro, container, false);
+    }
 
-        applyWindowInsets();
-        initViews();
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        applyWindowInsets(view);
+        initViews(view);
         setupDropdowns();
         setupNavigation();
     }
 
-    private void applyWindowInsets() {
-        View header = findViewById(R.id.header_layout);
-        View footer = findViewById(R.id.footer_buttons);
+    private void applyWindowInsets(View rootView) {
+        View header = rootView.findViewById(R.id.header_layout);
+        View footer = rootView.findViewById(R.id.footer_buttons);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             header.setPadding(
                 header.getPaddingLeft(),
@@ -85,45 +93,45 @@ public class CadastroActivity extends AppCompatActivity {
         });
     }
 
-    private void initViews() {
-        viewFlipper = findViewById(R.id.view_flipper);
-        btnVoltar = findViewById(R.id.btn_voltar);
-        btnProximo = findViewById(R.id.btn_proximo);
-        tvStepCounter = findViewById(R.id.tv_step_counter);
-        stepBar1 = findViewById(R.id.step_bar_1);
-        stepBar2 = findViewById(R.id.step_bar_2);
-        stepBar3 = findViewById(R.id.step_bar_3);
-        tvLabel1 = findViewById(R.id.tv_label_1);
-        tvLabel2 = findViewById(R.id.tv_label_2);
-        tvLabel3 = findViewById(R.id.tv_label_3);
+    private void initViews(View view) {
+        viewFlipper = view.findViewById(R.id.view_flipper);
+        btnVoltar = view.findViewById(R.id.btn_voltar);
+        btnProximo = view.findViewById(R.id.btn_proximo);
+        tvStepCounter = view.findViewById(R.id.tv_step_counter);
+        stepBar1 = view.findViewById(R.id.step_bar_1);
+        stepBar2 = view.findViewById(R.id.step_bar_2);
+        stepBar3 = view.findViewById(R.id.step_bar_3);
+        tvLabel1 = view.findViewById(R.id.tv_label_1);
+        tvLabel2 = view.findViewById(R.id.tv_label_2);
+        tvLabel3 = view.findViewById(R.id.tv_label_3);
 
-        tilNome = findViewById(R.id.til_nome);
-        tilEmail = findViewById(R.id.til_email);
-        tilSenha = findViewById(R.id.til_senha);
-        tilConfirmarSenha = findViewById(R.id.til_confirmar_senha);
-        etNome = findViewById(R.id.et_nome);
-        etEmail = findViewById(R.id.et_email);
-        etSenha = findViewById(R.id.et_senha);
-        etConfirmarSenha = findViewById(R.id.et_confirmar_senha);
-        cbTermos = findViewById(R.id.cb_termos);
+        tilNome = view.findViewById(R.id.til_nome);
+        tilEmail = view.findViewById(R.id.til_email);
+        tilSenha = view.findViewById(R.id.til_senha);
+        tilConfirmarSenha = view.findViewById(R.id.til_confirmar_senha);
+        etNome = view.findViewById(R.id.et_nome);
+        etEmail = view.findViewById(R.id.et_email);
+        etSenha = view.findViewById(R.id.et_senha);
+        etConfirmarSenha = view.findViewById(R.id.et_confirmar_senha);
+        cbTermos = view.findViewById(R.id.cb_termos);
 
-        tilArea = findViewById(R.id.til_area);
-        etArea = findViewById(R.id.et_area);
-        chipGroupNivel = findViewById(R.id.chip_group_nivel);
-        chipGroupContrato = findViewById(R.id.chip_group_contrato);
+        tilArea = view.findViewById(R.id.til_area);
+        etArea = view.findViewById(R.id.et_area);
+        chipGroupNivel = view.findViewById(R.id.chip_group_nivel);
+        chipGroupContrato = view.findViewById(R.id.chip_group_contrato);
 
-        tilCidade = findViewById(R.id.til_cidade);
-        tilEstado = findViewById(R.id.til_estado);
-        etCidade = findViewById(R.id.et_cidade);
-        etEstado = findViewById(R.id.et_estado);
-        switchRemoto = findViewById(R.id.switch_remoto);
-        switchRelocacao = findViewById(R.id.switch_relocacao);
+        tilCidade = view.findViewById(R.id.til_cidade);
+        tilEstado = view.findViewById(R.id.til_estado);
+        etCidade = view.findViewById(R.id.et_cidade);
+        etEstado = view.findViewById(R.id.et_estado);
+        switchRemoto = view.findViewById(R.id.switch_remoto);
+        switchRelocacao = view.findViewById(R.id.switch_relocacao);
 
-        findViewById(R.id.btn_back).setOnClickListener(v -> {
+        view.findViewById(R.id.btn_back).setOnClickListener(v -> {
             if (currentStep > 0) {
                 goToPreviousStep();
             } else {
-                finish();
+                NavHostFragment.findNavController(this).popBackStack();
             }
         });
     }
@@ -135,7 +143,7 @@ public class CadastroActivity extends AppCompatActivity {
             "Saúde", "Engenharia", "Administração", "Outro"
         };
         ArrayAdapter<String> areaAdapter = new ArrayAdapter<>(
-            this, android.R.layout.simple_dropdown_item_1line, areas
+            requireContext(), android.R.layout.simple_dropdown_item_1line, areas
         );
         etArea.setAdapter(areaAdapter);
 
@@ -145,7 +153,7 @@ public class CadastroActivity extends AppCompatActivity {
             "RS", "RO", "RR", "SC", "SP", "SE", "TO"
         };
         ArrayAdapter<String> estadoAdapter = new ArrayAdapter<>(
-            this, android.R.layout.simple_dropdown_item_1line, estados
+            requireContext(), android.R.layout.simple_dropdown_item_1line, estados
         );
         etEstado.setAdapter(estadoAdapter);
     }
@@ -164,34 +172,32 @@ public class CadastroActivity extends AppCompatActivity {
     }
 
     private void goToNextStep() {
-        viewFlipper.setInAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_in_right));
-        viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_out_left));
+        viewFlipper.setInAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.slide_in_right));
+        viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.slide_out_left));
         currentStep++;
         viewFlipper.showNext();
         updateStepUI();
     }
 
     private void goToPreviousStep() {
-        viewFlipper.setInAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_in_left));
-        viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_out_right));
+        viewFlipper.setInAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.slide_in_left));
+        viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.slide_out_right));
         currentStep--;
         viewFlipper.showPrevious();
         updateStepUI();
     }
 
     private void updateStepUI() {
-        int activeColor = ContextCompat.getColor(this, R.color.accent);
-        int inactiveColor = ContextCompat.getColor(this, R.color.step_inactive);
-        int activeLabelColor = ContextCompat.getColor(this, R.color.accent);
-        int inactiveLabelColor = ContextCompat.getColor(this, R.color.step_inactive);
+        int activeColor = ContextCompat.getColor(requireContext(), R.color.accent);
+        int inactiveColor = ContextCompat.getColor(requireContext(), R.color.step_inactive);
 
         stepBar1.setBackgroundColor(currentStep >= 0 ? activeColor : inactiveColor);
         stepBar2.setBackgroundColor(currentStep >= 1 ? activeColor : inactiveColor);
         stepBar3.setBackgroundColor(currentStep >= 2 ? activeColor : inactiveColor);
 
-        tvLabel1.setTextColor(currentStep >= 0 ? activeLabelColor : inactiveLabelColor);
-        tvLabel2.setTextColor(currentStep >= 1 ? activeLabelColor : inactiveLabelColor);
-        tvLabel3.setTextColor(currentStep >= 2 ? activeLabelColor : inactiveLabelColor);
+        tvLabel1.setTextColor(currentStep >= 0 ? activeColor : inactiveColor);
+        tvLabel2.setTextColor(currentStep >= 1 ? activeColor : inactiveColor);
+        tvLabel3.setTextColor(currentStep >= 2 ? activeColor : inactiveColor);
 
         tvStepCounter.setText("Passo " + (currentStep + 1) + " de 3");
 
@@ -306,9 +312,6 @@ public class CadastroActivity extends AppCompatActivity {
 
     private void finalizarCadastro() {
         // TODO: integrar com backend de autenticação
-        Intent intent = new Intent(this, DashbordCadActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
+        NavHostFragment.findNavController(this).navigate(R.id.action_cadastro_to_dashboard);
     }
 }

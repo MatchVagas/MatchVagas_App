@@ -1,9 +1,12 @@
 package com.edu.matchvagasapp;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -11,7 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class DashbordCadActivity extends AppCompatActivity {
+public class DashboardFragment extends Fragment {
 
     private Fragment activeFragment;
     private HomeFragment homeFragment;
@@ -19,24 +22,37 @@ public class DashbordCadActivity extends AppCompatActivity {
     private VagasFragment vagasFragment;
     private PerfilFragment perfilFragment;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.dashboard_can);
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.dashboard_can, container, false);
+    }
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        ViewCompat.setOnApplyWindowInsetsListener(view.findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
-            BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+            BottomNavigationView bottomNav = view.findViewById(R.id.bottom_navigation);
             bottomNav.setPadding(0, 0, 0, systemBars.bottom);
             return WindowInsetsCompat.CONSUMED;
         });
 
         if (savedInstanceState == null) {
             setupFragments();
+        } else {
+            homeFragment = (HomeFragment) getChildFragmentManager().findFragmentByTag("home");
+            buscarFragment = (BuscarFragment) getChildFragmentManager().findFragmentByTag("buscar");
+            vagasFragment = (VagasFragment) getChildFragmentManager().findFragmentByTag("vagas");
+            perfilFragment = (PerfilFragment) getChildFragmentManager().findFragmentByTag("perfil");
+            activeFragment = homeFragment;
         }
-        setupNavigation();
+
+        setupNavigation(view);
     }
 
     private void setupFragments() {
@@ -46,7 +62,7 @@ public class DashbordCadActivity extends AppCompatActivity {
         perfilFragment = new PerfilFragment();
         activeFragment = homeFragment;
 
-        getSupportFragmentManager().beginTransaction()
+        getChildFragmentManager().beginTransaction()
                 .add(R.id.nav_host_fragment, perfilFragment, "perfil")
                 .add(R.id.nav_host_fragment, vagasFragment, "vagas")
                 .add(R.id.nav_host_fragment, buscarFragment, "buscar")
@@ -57,8 +73,8 @@ public class DashbordCadActivity extends AppCompatActivity {
                 .commit();
     }
 
-    private void setupNavigation() {
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+    private void setupNavigation(View view) {
+        BottomNavigationView bottomNav = view.findViewById(R.id.bottom_navigation);
         bottomNav.setOnItemSelectedListener(item -> {
             if (homeFragment == null) return false;
 
@@ -71,7 +87,7 @@ public class DashbordCadActivity extends AppCompatActivity {
 
             if (selected == activeFragment) return true;
 
-            getSupportFragmentManager().beginTransaction()
+            getChildFragmentManager().beginTransaction()
                     .hide(activeFragment)
                     .show(selected)
                     .commit();

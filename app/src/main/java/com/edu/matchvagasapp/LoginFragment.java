@@ -1,47 +1,56 @@
 package com.edu.matchvagasapp;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginFragment extends Fragment {
 
     private TextInputLayout tilEmail, tilPassword;
     private TextInputEditText etEmail, etPassword;
-    private MaterialButton btnLogin;
-    private TextView tvForgotPassword, tvRegister;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.login_view, container, false);
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_view);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        tilEmail = findViewById(R.id.til_email);
-        tilPassword = findViewById(R.id.til_password);
-        etEmail = findViewById(R.id.et_email);
-        etPassword = findViewById(R.id.et_password);
-        btnLogin = findViewById(R.id.btn_login);
-        tvForgotPassword = findViewById(R.id.tv_forgot_password);
-        tvRegister = findViewById(R.id.tv_register);
+        tilEmail = view.findViewById(R.id.til_email);
+        tilPassword = view.findViewById(R.id.til_password);
+        etEmail = view.findViewById(R.id.et_email);
+        etPassword = view.findViewById(R.id.et_password);
+        MaterialButton btnLogin = view.findViewById(R.id.btn_login);
+        TextView tvForgotPassword = view.findViewById(R.id.tv_forgot_password);
+        TextView tvRegister = view.findViewById(R.id.tv_register);
 
         btnLogin.setOnClickListener(v -> attemptLogin());
 
         tvForgotPassword.setOnClickListener(v ->
-            Toast.makeText(this, "Recuperação de senha em breve", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Recuperação de senha em breve", Toast.LENGTH_SHORT).show()
         );
 
         tvRegister.setOnClickListener(v ->
-            startActivity(new Intent(this, CadastroActivity.class))
+            NavHostFragment.findNavController(this).navigate(R.id.action_login_to_cadastro)
         );
     }
 
@@ -73,8 +82,6 @@ public class LoginActivity extends AppCompatActivity {
         if (!valid) return;
 
         // TODO: integrar com backend de autenticação
-        Intent intent = new Intent(this, DashbordCadActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+        NavHostFragment.findNavController(this).navigate(R.id.action_login_to_dashboard);
     }
 }
