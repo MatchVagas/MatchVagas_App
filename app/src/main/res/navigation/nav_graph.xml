@@ -40,6 +40,46 @@
         android:id="@+id/dashboardFragment"
         android:name="com.edu.matchvagasapp.DashboardFragment"
         android:label="Dashboard"
-        tools:layout="@layout/dashboard_can" />
+        tools:layout="@layout/dashboard_can">
+        <action
+            android:id="@+id/action_dashboard_to_detalhes"
+            app:destination="@id/detalhesVagaFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/detalhesVagaFragment"
+        android:name="com.edu.matchvagasapp.DetalhesVagaFragment"
+        android:label="Detalhes da Vaga"
+        tools:layout="@layout/detalhes_vagas">
+        <argument android:name="vagaTitulo"  app:argType="string"  android:defaultValue="" />
+        <argument android:name="vagaEmpresa" app:argType="string"  android:defaultValue="" />
+        <argument android:name="vagaInicial" app:argType="string"  android:defaultValue="?" />
+        <argument android:name="vagaLocal"   app:argType="string"  android:defaultValue="" />
+        <argument android:name="vagaTipo"    app:argType="string"  android:defaultValue="" />
+        <argument android:name="vagaSalario" app:argType="string"  android:defaultValue="" />
+        <argument android:name="vagaMatch"   app:argType="integer" android:defaultValue="0" />
+        <action
+            android:id="@+id/action_detalhes_to_confirmar"
+            app:destination="@id/confirmarCandidaturaFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/confirmarCandidaturaFragment"
+        android:name="com.edu.matchvagasapp.ConfirmarCandidaturaFragment"
+        android:label="Confirmar Candidatura"
+        tools:layout="@layout/confirmar_candidatura">
+        <argument android:name="vagaTitulo"  app:argType="string"  android:defaultValue="" />
+        <argument android:name="vagaEmpresa" app:argType="string"  android:defaultValue="" />
+        <argument android:name="vagaInicial" app:argType="string"  android:defaultValue="?" />
+        <argument android:name="vagaMatch"   app:argType="integer" android:defaultValue="0" />
+    </fragment>
 
 </navigation>

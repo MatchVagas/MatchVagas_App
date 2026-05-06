@@ -74,6 +74,45 @@
     <string name="job_image_desc">Imagem da vaga</string>
     <string name="favorite">Favoritar vaga</string>
     <string name="share">Compartilhar vaga</string>
+    <string name="detalhes_vaga_title">Detalhes da Vaga</string>
+    <string name="descricao">Descrição</string>
+    <string name="requisitos">Requisitos</string>
+    <string name="beneficios">Benefícios</string>
+    <string name="candidatura_enviada">Candidatura enviada com sucesso!</string>
+    <string name="vaga_salva">Vaga salva!</string>
+    <string name="compartilhando">Compartilhando vaga…</string>
+
+    <!-- Confirmar Candidatura -->
+    <string name="confirmar_candidatura_title">Confirmar Candidatura</string>
+    <string name="candidatando_para">Candidatando-se para</string>
+    <string name="dados_obrigatorios">Dados obrigatórios</string>
+    <string name="sempre_compartilhado">Sempre compartilhado</string>
+    <string name="info_nome">Nome completo</string>
+    <string name="info_email">E-mail</string>
+    <string name="informacoes_opcionais">Informações adicionais</string>
+    <string name="info_telefone">Telefone</string>
+    <string name="info_telefone_sub">Número de contato direto</string>
+    <string name="info_curriculo">Currículo</string>
+    <string name="info_curriculo_sub">Histórico profissional completo</string>
+    <string name="info_formacao">Formação Acadêmica</string>
+    <string name="info_formacao_sub">Cursos e instituições de ensino</string>
+    <string name="info_experiencia">Experiência Profissional</string>
+    <string name="info_experiencia_sub">Empresas e cargos anteriores</string>
+    <string name="info_habilidades">Habilidades</string>
+    <string name="info_habilidades_sub">Competências técnicas e comportamentais</string>
+    <string name="info_linkedin">LinkedIn</string>
+    <string name="info_linkedin_sub">Perfil público na rede profissional</string>
+    <string name="carta_apresentacao">Carta de Apresentação</string>
+    <string name="carta_hint">Escreva uma mensagem para o recrutador…</string>
+    <string name="pretensao_salarial">Pretensão Salarial</string>
+    <string name="pretensao_hint">0,00</string>
+    <string name="opcional">Opcional</string>
+    <string name="termos_candidatura">Concordo em compartilhar as informações selecionadas com o recrutador responsável por esta vaga</string>
+    <string name="btn_confirmar_candidatura">Confirmar Candidatura</string>
+    <string name="erro_termos">Você precisa aceitar os termos para continuar</string>
+    <string name="dialog_sucesso_title">Candidatura enviada!</string>
+    <string name="dialog_sucesso_msg">Sua candidatura foi registrada com sucesso. O recrutador receberá as informações selecionadas e entrará em contato em breve. Acompanhe o status na aba Vagas.</string>
+    <string name="dialog_ok">Entendido</string>
 
     <!-- Job cards data -->
     <string name="vaga_android">Desenvolvedor Android</string>
