@@ -289,7 +289,7 @@
                         android:background="@drawable/bg_avatar"
                         android:backgroundTint="@color/warning"
                         android:padding="8dp"
-                        android:src="@drawable/ic_home"
+                        android:src="@drawable/home_24px"
                         android:tint="@color/white"
                         android:contentDescription="@null" />
 

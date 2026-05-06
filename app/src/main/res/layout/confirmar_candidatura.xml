@@ -9,7 +9,7 @@
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:background="@color/primary_header"
         app:navigationIcon="@drawable/ic_arrow_back"
         app:navigationIconTint="@color/white"
@@ -683,8 +683,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingTop="16dp">
+                android:paddingTop="16dp"
+                android:paddingEnd="16dp">
 
                 <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/checkboxTermos"
