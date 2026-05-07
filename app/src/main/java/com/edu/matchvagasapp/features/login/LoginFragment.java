@@ -1,4 +1,4 @@
-package com.edu.matchvagasapp;
+package com.edu.matchvagasapp.features.login;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.edu.matchvagasapp.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;

@@ -44,6 +44,7 @@
 
             <!-- Application 1: Em Análise -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/card_candidatura_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -148,6 +149,7 @@
                     </LinearLayout>
 
                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_detalhes_1"
                         style="@style/Widget.Material3.Button.OutlinedButton"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
@@ -161,6 +163,7 @@
 
             <!-- Application 2: Entrevista -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/card_candidatura_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -266,6 +269,7 @@
                     </LinearLayout>
 
                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_detalhes_2"
                         style="@style/Widget.Material3.Button.OutlinedButton"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
@@ -279,6 +283,7 @@
 
             <!-- Application 3: Em Análise -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/card_candidatura_3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -384,6 +389,7 @@
                     </LinearLayout>
 
                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_detalhes_3"
                         style="@style/Widget.Material3.Button.OutlinedButton"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"

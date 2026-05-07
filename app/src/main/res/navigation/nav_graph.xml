@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.edu.matchvagasapp.LoginFragment"
+        android:name="com.edu.matchvagasapp.features.login.LoginFragment"
         android:label="Login"
         tools:layout="@layout/login_view">
         <action
@@ -26,7 +26,7 @@
 
     <fragment
         android:id="@+id/cadastroFragment"
-        android:name="com.edu.matchvagasapp.CadastroFragment"
+        android:name="com.edu.matchvagasapp.features.cadastro.CadastroFragment"
         android:label="Cadastro"
         tools:layout="@layout/activity_cadastro">
         <action
@@ -38,7 +38,7 @@
 
     <fragment
         android:id="@+id/dashboardFragment"
-        android:name="com.edu.matchvagasapp.DashboardFragment"
+        android:name="com.edu.matchvagasapp.features.dashboard.DashboardFragment"
         android:label="Dashboard"
         tools:layout="@layout/dashboard_can">
         <action
@@ -52,7 +52,7 @@
 
     <fragment
         android:id="@+id/detalhesVagaFragment"
-        android:name="com.edu.matchvagasapp.DetalhesVagaFragment"
+        android:name="com.edu.matchvagasapp.features.vagas.DetalhesVagaFragment"
         android:label="Detalhes da Vaga"
         tools:layout="@layout/detalhes_vagas">
         <argument android:name="vagaTitulo"  app:argType="string"  android:defaultValue="" />
@@ -73,7 +73,7 @@
 
     <fragment
         android:id="@+id/confirmarCandidaturaFragment"
-        android:name="com.edu.matchvagasapp.ConfirmarCandidaturaFragment"
+        android:name="com.edu.matchvagasapp.features.candidatura.ConfirmarCandidaturaFragment"
         android:label="Confirmar Candidatura"
         tools:layout="@layout/confirmar_candidatura">
         <argument android:name="vagaTitulo"  app:argType="string"  android:defaultValue="" />

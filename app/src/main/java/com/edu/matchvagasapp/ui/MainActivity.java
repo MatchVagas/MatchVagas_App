@@ -1,9 +1,11 @@
-package com.edu.matchvagasapp;
+package com.edu.matchvagasapp.ui;
 
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.edu.matchvagasapp.R;
 
 public class MainActivity extends AppCompatActivity {
 

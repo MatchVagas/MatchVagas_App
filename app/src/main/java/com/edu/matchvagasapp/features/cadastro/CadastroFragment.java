@@ -1,4 +1,4 @@
-package com.edu.matchvagasapp;
+package com.edu.matchvagasapp.features.cadastro;
 
 import android.os.Bundle;
 import android.util.Patterns;
@@ -21,6 +21,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.edu.matchvagasapp.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.materialswitch.MaterialSwitch;

@@ -1,4 +1,4 @@
-package com.edu.matchvagasapp;
+package com.edu.matchvagasapp.features.dashboard;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,6 +12,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
+import com.edu.matchvagasapp.features.home.HomeFragment;
+import com.edu.matchvagasapp.features.perfil.PerfilFragment;
+import com.edu.matchvagasapp.R;
+import com.edu.matchvagasapp.features.buscar.BuscarFragment;
+import com.edu.matchvagasapp.features.vagas.VagasFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class DashboardFragment extends Fragment {
