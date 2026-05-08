@@ -48,7 +48,59 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_dashboard_to_editar_dados"
+            app:destination="@id/editarDadosPessoaisFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_dashboard_to_editar_formacao"
+            app:destination="@id/editarFormacaoFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_dashboard_to_editar_experiencia"
+            app:destination="@id/editarExperienciaFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_dashboard_to_editar_habilidades"
+            app:destination="@id/editarHabilidadesFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
+
+    <fragment
+        android:id="@+id/editarDadosPessoaisFragment"
+        android:name="com.edu.matchvagasapp.features.perfil.EditarDadosPessoaisFragment"
+        android:label="Dados Pessoais"
+        tools:layout="@layout/fragment_editar_dados_pessoais" />
+
+    <fragment
+        android:id="@+id/editarFormacaoFragment"
+        android:name="com.edu.matchvagasapp.features.perfil.EditarFormacaoFragment"
+        android:label="Formação Acadêmica"
+        tools:layout="@layout/fragment_editar_formacao" />
+
+    <fragment
+        android:id="@+id/editarExperienciaFragment"
+        android:name="com.edu.matchvagasapp.features.perfil.EditarExperienciaFragment"
+        android:label="Experiência Profissional"
+        tools:layout="@layout/fragment_editar_experiencia" />
+
+    <fragment
+        android:id="@+id/editarHabilidadesFragment"
+        android:name="com.edu.matchvagasapp.features.perfil.EditarHabilidadesFragment"
+        android:label="Habilidades"
+        tools:layout="@layout/fragment_editar_habilidades" />
 
     <fragment
         android:id="@+id/detalhesVagaFragment"

@@ -114,6 +114,112 @@
     <string name="dialog_sucesso_msg">Sua candidatura foi registrada com sucesso. O recrutador receberá as informações selecionadas e entrará em contato em breve. Acompanhe o status na aba Vagas.</string>
     <string name="dialog_ok">Entendido</string>
 
+    <!-- Editar Dados Pessoais -->
+    <string name="voltar">Voltar</string>
+    <string name="hint_nome_completo">Nome completo</string>
+    <string name="hint_telefone">Telefone / Celular</string>
+    <string name="hint_data_nascimento">Data de nascimento</string>
+    <string name="hint_cpf">CPF</string>
+    <string name="hint_genero">Gênero</string>
+    <string name="hint_cep">CEP</string>
+    <string name="hint_cidade">Cidade</string>
+    <string name="hint_estado">Estado</string>
+    <string name="hint_linkedin">LinkedIn (ex: linkedin.com/in/seu-nome)</string>
+    <string name="hint_portfolio">Portfólio / Site pessoal</string>
+    <string name="secao_informacoes_basicas">Informações Básicas</string>
+    <string name="secao_identificacao">Identificação</string>
+    <string name="secao_localizacao">Localização</string>
+    <string name="secao_redes_profissionais">Redes Profissionais</string>
+    <string name="btn_salvar_alteracoes">Salvar Alterações</string>
+    <string name="genero_masculino">Masculino</string>
+    <string name="genero_feminino">Feminino</string>
+    <string name="genero_nao_binario">Não-binário</string>
+    <string name="genero_prefiro_nao_informar">Prefiro não informar</string>
+    <string name="erro_nome_vazio">Informe seu nome completo</string>
+    <string name="erro_email_invalido">Informe um e-mail válido</string>
+    <string name="sucesso_dados_salvos">Dados salvos com sucesso!</string>
+
+    <!-- Editar Formação Acadêmica -->
+    <string name="secao_instituicao">Dados da Instituição</string>
+    <string name="secao_periodo">Período</string>
+    <string name="secao_descricao">Descrição</string>
+    <string name="hint_instituicao">Instituição de ensino</string>
+    <string name="hint_curso">Curso</string>
+    <string name="hint_grau">Grau / Nível</string>
+    <string name="hint_mes">Mês</string>
+    <string name="hint_ano">Ano (ex: 2022)</string>
+    <string name="hint_descricao_formacao">Atividades, projetos ou observações (opcional)</string>
+    <string name="descricao_formacao_dica">Descreva trabalhos de conclusão, projetos acadêmicos ou atividades extracurriculares relevantes.</string>
+    <string name="ainda_cursando">Ainda cursando</string>
+    <string name="ainda_cursando_sub">Curso sem data de conclusão definida</string>
+    <string name="periodo_inicio">Início</string>
+    <string name="periodo_conclusao">Conclusão</string>
+    <string name="grau_ensino_medio">Ensino Médio</string>
+    <string name="grau_tecnico">Técnico</string>
+    <string name="grau_graduacao">Graduação</string>
+    <string name="grau_posgraduacao">Pós-graduação</string>
+    <string name="grau_mba">MBA</string>
+    <string name="grau_mestrado">Mestrado</string>
+    <string name="grau_doutorado">Doutorado</string>
+    <string name="mes_jan">Janeiro</string>
+    <string name="mes_fev">Fevereiro</string>
+    <string name="mes_mar">Março</string>
+    <string name="mes_abr">Abril</string>
+    <string name="mes_mai">Maio</string>
+    <string name="mes_jun">Junho</string>
+    <string name="mes_jul">Julho</string>
+    <string name="mes_ago">Agosto</string>
+    <string name="mes_set">Setembro</string>
+    <string name="mes_out">Outubro</string>
+    <string name="mes_nov">Novembro</string>
+    <string name="mes_dez">Dezembro</string>
+    <string name="erro_instituicao_vazia">Informe a instituição de ensino</string>
+    <string name="erro_curso_vazio">Informe o nome do curso</string>
+    <string name="erro_ano_invalido">Informe um ano válido (ex: 2022)</string>
+    <string name="sucesso_formacao_salva">Formação salva com sucesso!</string>
+
+    <!-- Editar Experiência Profissional -->
+    <string name="secao_dados_cargo">Dados do Cargo</string>
+    <string name="secao_responsabilidades">Responsabilidades</string>
+    <string name="hint_cargo">Cargo / Função</string>
+    <string name="hint_empresa">Empresa</string>
+    <string name="hint_modalidade">Modalidade de trabalho</string>
+    <string name="hint_vinculo">Tipo de vínculo</string>
+    <string name="hint_cidade_empresa">Cidade (ex: São Paulo, SP)</string>
+    <string name="hint_responsabilidades">Descreva suas principais responsabilidades e conquistas (opcional)</string>
+    <string name="responsabilidades_dica">Use verbos de ação: desenvolveu, liderou, implementou, reduziu…</string>
+    <string name="trabalho_atual">Trabalho atual</string>
+    <string name="trabalho_atual_sub">Ainda trabalho nessa empresa</string>
+    <string name="periodo_saida">Saída</string>
+    <string name="modalidade_presencial">Presencial</string>
+    <string name="modalidade_remoto">Remoto</string>
+    <string name="modalidade_hibrido">Híbrido</string>
+    <string name="vinculo_clt">CLT</string>
+    <string name="vinculo_pj">PJ</string>
+    <string name="vinculo_estagio">Estágio</string>
+    <string name="vinculo_freelance">Freelance</string>
+    <string name="vinculo_temporario">Temporário</string>
+    <string name="erro_cargo_vazio">Informe o cargo ou função</string>
+    <string name="erro_empresa_vazia">Informe o nome da empresa</string>
+    <string name="sucesso_experiencia_salva">Experiência salva com sucesso!</string>
+
+    <!-- Editar Habilidades -->
+    <string name="secao_adicionar_habilidade">Adicionar Habilidade</string>
+    <string name="secao_suas_habilidades">Suas Habilidades</string>
+    <string name="secao_sugestoes">Sugestões</string>
+    <string name="hint_habilidade">Ex: Kotlin, Liderança, SQL…</string>
+    <string name="btn_adicionar">Adicionar</string>
+    <string name="habilidades_limite">máx. 20</string>
+    <string name="habilidades_vazio">Nenhuma habilidade adicionada ainda</string>
+    <string name="sugestoes_dica">Toque para adicionar ao seu perfil</string>
+    <string name="sugestoes_tecnicas">Técnicas</string>
+    <string name="sugestoes_comportamentais">Comportamentais</string>
+    <string name="erro_habilidade_vazia">Digite o nome da habilidade</string>
+    <string name="erro_habilidade_duplicada">Habilidade já adicionada</string>
+    <string name="erro_habilidade_limite">Limite de 20 habilidades atingido</string>
+    <string name="erro_habilidades_minimo">Adicione pelo menos uma habilidade</string>
+    <string name="sucesso_habilidades_salvas">Habilidades salvas com sucesso!</string>
+
     <!-- Job cards data -->
     <string name="vaga_android">Desenvolvedor Android</string>
     <string name="vaga_backend">Engenheiro Backend</string>

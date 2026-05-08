@@ -24,14 +24,22 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.edu.matchvagasapp.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointBackward;
+import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class CadastroFragment extends Fragment {
 
     private int currentStep = 0;
+    private Long selectedDateMillis = null;
 
     private ViewFlipper viewFlipper;
     private MaterialButton btnVoltar, btnProximo;
@@ -40,8 +48,9 @@ public class CadastroFragment extends Fragment {
     private TextView tvLabel1, tvLabel2, tvLabel3;
 
     // Etapa 1
-    private TextInputLayout tilNome, tilEmail, tilSenha, tilConfirmarSenha;
-    private TextInputEditText etNome, etEmail, etSenha, etConfirmarSenha;
+    private ChipGroup chipGroupTipoUsuario;
+    private TextInputLayout tilNome, tilEmail, tilSenha, tilConfirmarSenha, tilDataNascimento;
+    private TextInputEditText etNome, etEmail, etSenha, etConfirmarSenha, etDataNascimento;
     private CheckBox cbTermos;
 
     // Etapa 2
@@ -95,38 +104,44 @@ public class CadastroFragment extends Fragment {
     }
 
     private void initViews(View view) {
-        viewFlipper = view.findViewById(R.id.view_flipper);
-        btnVoltar = view.findViewById(R.id.btn_voltar);
-        btnProximo = view.findViewById(R.id.btn_proximo);
-        tvStepCounter = view.findViewById(R.id.tv_step_counter);
-        stepBar1 = view.findViewById(R.id.step_bar_1);
-        stepBar2 = view.findViewById(R.id.step_bar_2);
-        stepBar3 = view.findViewById(R.id.step_bar_3);
-        tvLabel1 = view.findViewById(R.id.tv_label_1);
-        tvLabel2 = view.findViewById(R.id.tv_label_2);
-        tvLabel3 = view.findViewById(R.id.tv_label_3);
+        viewFlipper    = view.findViewById(R.id.view_flipper);
+        btnVoltar      = view.findViewById(R.id.btn_voltar);
+        btnProximo     = view.findViewById(R.id.btn_proximo);
+        tvStepCounter  = view.findViewById(R.id.tv_step_counter);
+        stepBar1       = view.findViewById(R.id.step_bar_1);
+        stepBar2       = view.findViewById(R.id.step_bar_2);
+        stepBar3       = view.findViewById(R.id.step_bar_3);
+        tvLabel1       = view.findViewById(R.id.tv_label_1);
+        tvLabel2       = view.findViewById(R.id.tv_label_2);
+        tvLabel3       = view.findViewById(R.id.tv_label_3);
 
-        tilNome = view.findViewById(R.id.til_nome);
-        tilEmail = view.findViewById(R.id.til_email);
-        tilSenha = view.findViewById(R.id.til_senha);
+        chipGroupTipoUsuario = view.findViewById(R.id.chip_group_tipo_usuario);
+
+        tilNome           = view.findViewById(R.id.til_nome);
+        tilEmail          = view.findViewById(R.id.til_email);
+        tilSenha          = view.findViewById(R.id.til_senha);
         tilConfirmarSenha = view.findViewById(R.id.til_confirmar_senha);
-        etNome = view.findViewById(R.id.et_nome);
-        etEmail = view.findViewById(R.id.et_email);
-        etSenha = view.findViewById(R.id.et_senha);
-        etConfirmarSenha = view.findViewById(R.id.et_confirmar_senha);
-        cbTermos = view.findViewById(R.id.cb_termos);
+        tilDataNascimento = view.findViewById(R.id.til_data_nascimento);
+        etNome            = view.findViewById(R.id.et_nome);
+        etEmail           = view.findViewById(R.id.et_email);
+        etSenha           = view.findViewById(R.id.et_senha);
+        etConfirmarSenha  = view.findViewById(R.id.et_confirmar_senha);
+        etDataNascimento  = view.findViewById(R.id.et_data_nascimento);
+        cbTermos          = view.findViewById(R.id.cb_termos);
 
-        tilArea = view.findViewById(R.id.til_area);
-        etArea = view.findViewById(R.id.et_area);
-        chipGroupNivel = view.findViewById(R.id.chip_group_nivel);
+        tilArea          = view.findViewById(R.id.til_area);
+        etArea           = view.findViewById(R.id.et_area);
+        chipGroupNivel   = view.findViewById(R.id.chip_group_nivel);
         chipGroupContrato = view.findViewById(R.id.chip_group_contrato);
 
-        tilCidade = view.findViewById(R.id.til_cidade);
-        tilEstado = view.findViewById(R.id.til_estado);
-        etCidade = view.findViewById(R.id.et_cidade);
-        etEstado = view.findViewById(R.id.et_estado);
-        switchRemoto = view.findViewById(R.id.switch_remoto);
+        tilCidade      = view.findViewById(R.id.til_cidade);
+        tilEstado      = view.findViewById(R.id.til_estado);
+        etCidade       = view.findViewById(R.id.et_cidade);
+        etEstado       = view.findViewById(R.id.et_estado);
+        switchRemoto   = view.findViewById(R.id.switch_remoto);
         switchRelocacao = view.findViewById(R.id.switch_relocacao);
+
+        etDataNascimento.setOnClickListener(v -> showDatePicker());
 
         view.findViewById(R.id.btn_back).setOnClickListener(v -> {
             if (currentStep > 0) {
@@ -137,26 +152,45 @@ public class CadastroFragment extends Fragment {
         });
     }
 
+    private void showDatePicker() {
+        CalendarConstraints constraints = new CalendarConstraints.Builder()
+                .setValidator(DateValidatorPointBackward.now())
+                .build();
+
+        MaterialDatePicker<Long> picker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Data de nascimento")
+                .setCalendarConstraints(constraints)
+                .build();
+
+        picker.addOnPositiveButtonClickListener(selection -> {
+            selectedDateMillis = selection;
+            String formatted = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    .format(new Date(selection));
+            etDataNascimento.setText(formatted);
+            tilDataNascimento.setError(null);
+        });
+
+        picker.show(getParentFragmentManager(), "DATE_PICKER");
+    }
+
     private void setupDropdowns() {
         String[] areas = {
             "Tecnologia", "Design", "Marketing", "Finanças",
             "Recursos Humanos", "Vendas", "Jurídico", "Educação",
             "Saúde", "Engenharia", "Administração", "Outro"
         };
-        ArrayAdapter<String> areaAdapter = new ArrayAdapter<>(
+        etArea.setAdapter(new ArrayAdapter<>(
             requireContext(), android.R.layout.simple_dropdown_item_1line, areas
-        );
-        etArea.setAdapter(areaAdapter);
+        ));
 
         String[] estados = {
             "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA",
             "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN",
             "RS", "RO", "RR", "SC", "SP", "SE", "TO"
         };
-        ArrayAdapter<String> estadoAdapter = new ArrayAdapter<>(
+        etEstado.setAdapter(new ArrayAdapter<>(
             requireContext(), android.R.layout.simple_dropdown_item_1line, estados
-        );
-        etEstado.setAdapter(estadoAdapter);
+        ));
     }
 
     private void setupNavigation() {
@@ -189,7 +223,7 @@ public class CadastroFragment extends Fragment {
     }
 
     private void updateStepUI() {
-        int activeColor = ContextCompat.getColor(requireContext(), R.color.accent);
+        int activeColor   = ContextCompat.getColor(requireContext(), R.color.accent);
         int inactiveColor = ContextCompat.getColor(requireContext(), R.color.step_inactive);
 
         stepBar1.setBackgroundColor(currentStep >= 0 ? activeColor : inactiveColor);
@@ -217,6 +251,11 @@ public class CadastroFragment extends Fragment {
 
     private boolean validateEtapa1() {
         boolean valid = true;
+
+        if (chipGroupTipoUsuario.getCheckedChipId() == View.NO_ID) {
+            Snackbar.make(viewFlipper, "Selecione o tipo de conta", Snackbar.LENGTH_SHORT).show();
+            valid = false;
+        }
 
         String nome = etNome.getText() != null ? etNome.getText().toString().trim() : "";
         if (nome.isEmpty()) {
@@ -260,6 +299,13 @@ public class CadastroFragment extends Fragment {
             valid = false;
         } else {
             tilConfirmarSenha.setError(null);
+        }
+
+        if (selectedDateMillis == null) {
+            tilDataNascimento.setError("Data de nascimento é obrigatória");
+            valid = false;
+        } else {
+            tilDataNascimento.setError(null);
         }
 
         if (valid && !cbTermos.isChecked()) {

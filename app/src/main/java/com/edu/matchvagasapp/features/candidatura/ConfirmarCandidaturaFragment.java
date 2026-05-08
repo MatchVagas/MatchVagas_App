@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -45,6 +46,13 @@ public class ConfirmarCandidaturaFragment extends Fragment {
         ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(0, bars.top, 0, 0);
+            return insets;
+        });
+
+        NestedScrollView scrollView = view.findViewById(R.id.scrollView);
+        ViewCompat.setOnApplyWindowInsetsListener(scrollView, (v, insets) -> {
+            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(0, 0, 0, bars.bottom);
             return insets;
         });
         toolbar.setNavigationOnClickListener(v ->

@@ -149,6 +149,7 @@
 
                 <!-- Dados Pessoais -->
                 <LinearLayout
+                    android:id="@+id/item_dados_pessoais"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_section_item"
@@ -211,6 +212,7 @@
 
                 <!-- Formação -->
                 <LinearLayout
+                    android:id="@+id/item_formacao"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_section_item"
@@ -274,6 +276,7 @@
 
                 <!-- Experiência -->
                 <LinearLayout
+                    android:id="@+id/item_experiencia"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_section_item"
@@ -337,6 +340,7 @@
 
                 <!-- Habilidades -->
                 <LinearLayout
+                    android:id="@+id/item_habilidades"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_section_item"

@@ -177,6 +177,39 @@
                         android:orientation="vertical"
                         android:padding="16dp">
 
+                        <!-- Tipo de conta -->
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Tipo de conta"
+                            android:textSize="13sp"
+                            android:textColor="@color/text_secondary"
+                            android:layout_marginBottom="8dp"/>
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/chip_group_tipo_usuario"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:singleSelection="true"
+                            app:selectionRequired="false"
+                            android:layout_marginBottom="16dp">
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chip_candidato"
+                                style="@style/Widget.Material3.Chip.Filter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Candidato"/>
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chip_empresa"
+                                style="@style/Widget.Material3.Chip.Filter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Empresa"/>
+
+                        </com.google.android.material.chip.ChipGroup>
+
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_nome"
                             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
@@ -239,14 +272,34 @@
                             android:layout_height="wrap_content"
                             android:hint="Confirmar senha"
                             app:startIconDrawable="@drawable/ic_lock"
-                            app:endIconMode="password_toggle">
+                            app:endIconMode="password_toggle"
+                            android:layout_marginBottom="12dp">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/et_confirmar_senha"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="textPassword"
-                                android:imeOptions="actionDone"/>
+                                android:imeOptions="actionNext"/>
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <!-- Data de nascimento -->
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_data_nascimento"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Data de nascimento">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_data_nascimento"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="none"
+                                android:focusable="false"
+                                android:focusableInTouchMode="false"
+                                android:cursorVisible="false"/>
 
                         </com.google.android.material.textfield.TextInputLayout>
 
