@@ -8,6 +8,7 @@
 
     <!-- Header -->
     <LinearLayout
+        android:id="@+id/header_habilidades"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primary_header"
@@ -301,6 +302,7 @@
 
     <!-- Footer: Save button -->
     <LinearLayout
+        android:id="@+id/footer_salvar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/surface"

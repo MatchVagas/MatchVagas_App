@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.edu.matchvagasapp.R;
+import com.edu.matchvagasapp.features.candidatura.ConfirmarCandidaturaFragment;
 import com.edu.matchvagasapp.features.vagas.DetalhesVagaFragment;
 
 public class HomeFragment extends Fragment {
@@ -38,6 +39,26 @@ public class HomeFragment extends Fragment {
         view.findViewById(R.id.card_vaga_fullstack).setOnClickListener(v ->
                 openDetalhes("Desenvolvedor Full Stack", "Banco Digital", "B",
                         "Rio de Janeiro, RJ", "CLT", "R$ 7.000 – R$ 10.000", 79));
+
+        view.findViewById(R.id.btnCandidatarAndroid).setOnClickListener(v ->
+                openConfirmar("Desenvolvedor Android", "TechCorp Brasil", "T", 92));
+
+        view.findViewById(R.id.btnCandidatarBackend).setOnClickListener(v ->
+                openConfirmar("Engenheiro Backend", "Startup XYZ", "S", 87));
+
+        view.findViewById(R.id.btnCandidatarFullstack).setOnClickListener(v ->
+                openConfirmar("Desenvolvedor Full Stack", "Banco Digital", "B", 79));
+    }
+
+    private void openConfirmar(String titulo, String empresa, String inicial, int match) {
+        Bundle args = new Bundle();
+        args.putString(ConfirmarCandidaturaFragment.ARG_TITULO, titulo);
+        args.putString(ConfirmarCandidaturaFragment.ARG_EMPRESA, empresa);
+        args.putString(ConfirmarCandidaturaFragment.ARG_INICIAL, inicial);
+        args.putInt(ConfirmarCandidaturaFragment.ARG_MATCH, match);
+
+        Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_main)
+                .navigate(R.id.action_dashboard_to_confirmar_candidatura, args);
     }
 
     private void openDetalhes(String titulo, String empresa, String inicial,
