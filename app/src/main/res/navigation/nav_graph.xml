@@ -89,25 +89,41 @@
         android:id="@+id/editarDadosPessoaisFragment"
         android:name="com.edu.matchvagasapp.features.perfil.EditarDadosPessoaisFragment"
         android:label="Dados Pessoais"
-        tools:layout="@layout/fragment_editar_dados_pessoais" />
+        tools:layout="@layout/fragment_editar_dados_pessoais" >
+        <action
+            android:id="@+id/btn_voltar2"
+            app:destination="@id/perfilFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/editarFormacaoFragment"
         android:name="com.edu.matchvagasapp.features.perfil.EditarFormacaoFragment"
         android:label="Formação Acadêmica"
-        tools:layout="@layout/fragment_editar_formacao" />
+        tools:layout="@layout/fragment_editar_formacao">
+        <action
+            android:id="@+id/action_editarFormacaoFragment_to_perfilFragment"
+            app:destination="@id/perfilFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/editarExperienciaFragment"
         android:name="com.edu.matchvagasapp.features.perfil.EditarExperienciaFragment"
         android:label="Experiência Profissional"
-        tools:layout="@layout/fragment_editar_experiencia" />
+        tools:layout="@layout/fragment_editar_experiencia">
+        <action
+            android:id="@+id/action_editarExperienciaFragment_to_perfilFragment"
+            app:destination="@id/perfilFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/editarHabilidadesFragment"
         android:name="com.edu.matchvagasapp.features.perfil.EditarHabilidadesFragment"
         android:label="Habilidades"
-        tools:layout="@layout/fragment_editar_habilidades" />
+        tools:layout="@layout/fragment_editar_habilidades">
+        <action
+            android:id="@+id/action_editarHabilidadesFragment_to_perfilFragment"
+            app:destination="@id/perfilFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/cadastroCurriculoFragment"

@@ -110,7 +110,7 @@ public class EditarExperienciaFragment extends Fragment {
 
     private void setupButtons(View view) {
         view.findViewById(R.id.btn_voltar).setOnClickListener(v ->
-                NavHostFragment.findNavController(this).navigateUp());
+                NavHostFragment.findNavController(this).navigate(R.id.action_editarExperienciaFragment_to_perfilFragment));
 
         MaterialButton btnSalvar = view.findViewById(R.id.btn_salvar);
         btnSalvar.setOnClickListener(v -> salvarExperiencia(view));
@@ -170,6 +170,6 @@ public class EditarExperienciaFragment extends Fragment {
         if (!valido) return;
 
         Snackbar.make(rootView, getString(R.string.sucesso_experiencia_salva), Snackbar.LENGTH_SHORT).show();
-        rootView.postDelayed(() -> NavHostFragment.findNavController(this).navigateUp(), 1200);
+        rootView.postDelayed(() -> NavHostFragment.findNavController(this).navigate(R.id.action_editarExperienciaFragment_to_perfilFragment), 1200);
     }
 }

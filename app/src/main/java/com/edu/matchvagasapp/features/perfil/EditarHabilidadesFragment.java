@@ -227,7 +227,7 @@ public class EditarHabilidadesFragment extends Fragment {
 
     private void setupButtons(View view) {
         view.findViewById(R.id.btn_voltar).setOnClickListener(v ->
-                NavHostFragment.findNavController(this).navigateUp());
+                NavHostFragment.findNavController(this).navigate(R.id.action_editarHabilidadesFragment_to_perfilFragment));
 
         view.findViewById(R.id.btn_salvar).setOnClickListener(v -> salvarHabilidades(view));
     }
@@ -248,7 +248,7 @@ public class EditarHabilidadesFragment extends Fragment {
         }
         Snackbar.make(rootView,
                 getString(R.string.sucesso_habilidades_salvas), Snackbar.LENGTH_SHORT).show();
-        rootView.postDelayed(() -> NavHostFragment.findNavController(this).navigateUp(), 1200);
+        rootView.postDelayed(() -> NavHostFragment.findNavController(this).navigate(R.id.action_editarHabilidadesFragment_to_perfilFragment), 1200);
     }
 
     private void atualizarContadorEVazio() {
