@@ -177,6 +177,22 @@
     <fragment
         android:id="@+id/perfilFragment"
         android:name="com.edu.matchvagasapp.features.perfil.PerfilFragment"
-        android:label="PerfilFragment" />
+        android:label="PerfilFragment">
+        <action
+            android:id="@+id/action_perfil_to_editar_dados"
+            app:destination="@id/editarDadosPessoaisFragment" />
+        <action
+            android:id="@+id/action_perfil_to_editar_formacao"
+            app:destination="@id/editarFormacaoFragment" />
+        <action
+            android:id="@+id/action_perfil_to_editar_experiencia"
+            app:destination="@id/editarExperienciaFragment" />
+        <action
+            android:id="@+id/action_perfil_to_editar_habilidades"
+            app:destination="@id/editarHabilidadesFragment" />
+        <action
+            android:id="@+id/action_perfil_to_cadastro_curriculo"
+            app:destination="@id/cadastroCurriculoFragment" />
+    </fragment>
 
 </navigation>

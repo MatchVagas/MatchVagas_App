@@ -104,7 +104,7 @@ public class EditarFormacaoFragment extends Fragment {
 
     private void setupButtons(View view) {
         view.findViewById(R.id.btn_voltar).setOnClickListener(v ->
-                NavHostFragment.findNavController(this).navigate(R.id.action_editarFormacaoFragment_to_perfilFragment));
+                NavHostFragment.findNavController(this).navigateUp());
 
         MaterialButton btnSalvar = view.findViewById(R.id.btn_salvar);
         btnSalvar.setOnClickListener(v -> salvarFormacao(view));
@@ -161,6 +161,6 @@ public class EditarFormacaoFragment extends Fragment {
         if (!valido) return;
 
         Snackbar.make(rootView, getString(R.string.sucesso_formacao_salva), Snackbar.LENGTH_SHORT).show();
-        rootView.postDelayed(() -> NavHostFragment.findNavController(this).navigate(R.id.action_editarFormacaoFragment_to_perfilFragment), 1200);
+        rootView.postDelayed(() -> NavHostFragment.findNavController(this).navigateUp(), 1200);
     }
 }

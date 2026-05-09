@@ -117,7 +117,7 @@ public class EditarDadosPessoaisFragment extends Fragment {
 
     private void setupButtons(View view) {
         view.findViewById(R.id.btn_voltar).setOnClickListener(v ->
-                NavHostFragment.findNavController(this).navigate(R.id.btn_voltar2));
+                NavHostFragment.findNavController(this).navigateUp());
 //                NavHostFragment.findNavController(this).navigateUp());
 
         MaterialButton btnSalvar = view.findViewById(R.id.btn_salvar);
@@ -152,6 +152,6 @@ public class EditarDadosPessoaisFragment extends Fragment {
         if (!valido) return;
 
         Snackbar.make(rootView, getString(R.string.sucesso_dados_salvos), Snackbar.LENGTH_SHORT).show();
-        rootView.postDelayed(() -> NavHostFragment.findNavController(this).navigate(R.id.btn_voltar2), 1200);
+        rootView.postDelayed(() -> NavHostFragment.findNavController(this).navigateUp(), 1200);
     }
 }

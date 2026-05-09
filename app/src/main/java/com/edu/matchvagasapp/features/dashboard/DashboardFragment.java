@@ -26,6 +26,7 @@ public class DashboardFragment extends Fragment {
     private BuscarFragment buscarFragment;
     private VagasFragment vagasFragment;
     private PerfilFragment perfilFragment;
+    private int selectedTabId = R.id.item_1;
 
     @Nullable
     @Override
@@ -47,17 +48,25 @@ public class DashboardFragment extends Fragment {
             return WindowInsetsCompat.CONSUMED;
         });
 
-        if (savedInstanceState == null) {
+        Fragment existingHome = getChildFragmentManager().findFragmentByTag("home");
+        if (existingHome == null) {
             setupFragments();
         } else {
-            homeFragment = (HomeFragment) getChildFragmentManager().findFragmentByTag("home");
+            homeFragment = (HomeFragment) existingHome;
             buscarFragment = (BuscarFragment) getChildFragmentManager().findFragmentByTag("buscar");
             vagasFragment = (VagasFragment) getChildFragmentManager().findFragmentByTag("vagas");
             perfilFragment = (PerfilFragment) getChildFragmentManager().findFragmentByTag("perfil");
-            activeFragment = homeFragment;
+            restoreActiveFragment();
         }
 
         setupNavigation(view);
+    }
+
+    private void restoreActiveFragment() {
+        if (selectedTabId == R.id.item_4) activeFragment = perfilFragment;
+        else if (selectedTabId == R.id.item_2) activeFragment = buscarFragment;
+        else if (selectedTabId == R.id.item_3) activeFragment = vagasFragment;
+        else activeFragment = homeFragment;
     }
 
     private void setupFragments() {
@@ -80,6 +89,7 @@ public class DashboardFragment extends Fragment {
 
     private void setupNavigation(View view) {
         BottomNavigationView bottomNav = view.findViewById(R.id.bottom_navigation);
+        bottomNav.setSelectedItemId(selectedTabId);
         bottomNav.setOnItemSelectedListener(item -> {
             if (homeFragment == null) return false;
 
@@ -92,6 +102,7 @@ public class DashboardFragment extends Fragment {
 
             if (selected == activeFragment) return true;
 
+            selectedTabId = id;
             getChildFragmentManager().beginTransaction()
                     .hide(activeFragment)
                     .show(selected)

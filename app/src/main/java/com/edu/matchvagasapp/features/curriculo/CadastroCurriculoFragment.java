@@ -91,7 +91,7 @@ public class CadastroCurriculoFragment extends Fragment {
 
     private void setupCliques(View view) {
         view.findViewById(R.id.btn_fechar).setOnClickListener(v ->
-                NavHostFragment.findNavController(this).navigate(R.id.action_cadastroCurriculoFragment_to_perfilFragment2));
+                NavHostFragment.findNavController(this).navigateUp());
 
         layoutSemArquivo.setOnClickListener(v -> abrirSeletor());
         btnTrocarArquivo.setOnClickListener(v -> abrirSeletor());
