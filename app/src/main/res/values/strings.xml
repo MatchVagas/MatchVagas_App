@@ -220,6 +220,39 @@
     <string name="erro_habilidades_minimo">Adicione pelo menos uma habilidade</string>
     <string name="sucesso_habilidades_salvas">Habilidades salvas com sucesso!</string>
 
+    <!-- Cadastro de Currículo (upload) -->
+    <string name="cadastro_curriculo_titulo">Cadastro de Currículo</string>
+    <string name="curriculo_upload_desc">Envie seu currículo em PDF ou Word. Ele será compartilhado com recrutadores ao se candidatar a vagas.</string>
+    <string name="upload_toque_aqui">Toque para selecionar o arquivo</string>
+    <string name="upload_formatos_aceitos">PDF, DOC ou DOCX  •  máx. 5 MB</string>
+    <string name="upload_trocar">Trocar arquivo</string>
+    <string name="upload_remover">Remover</string>
+    <string name="upload_limite_tamanho">Tamanho máximo permitido: 5 MB</string>
+    <string name="secao_formatos">Formatos aceitos</string>
+    <string name="formato_recomendado">Recomendado</string>
+    <string name="formato_pdf_nome">PDF</string>
+    <string name="formato_pdf_desc">Mantém a formatação em qualquer dispositivo</string>
+    <string name="formato_doc_nome">DOC</string>
+    <string name="formato_doc_desc">Microsoft Word 97–2003</string>
+    <string name="formato_docx_nome">DOCX</string>
+    <string name="formato_docx_desc">Microsoft Word (versão moderna)</string>
+    <string name="secao_dicas_curriculo">Dicas para um bom currículo</string>
+    <string name="dica_1_titulo">Seja objetivo</string>
+    <string name="dica_1_desc">Mantenha entre 1 e 2 páginas. Recrutadores dedicam em média 7 segundos por currículo.</string>
+    <string name="dica_2_titulo">Use formato limpo e legível</string>
+    <string name="dica_2_desc">Prefira fontes simples (Arial, Calibri) e margens generosas. Evite cores excessivas.</string>
+    <string name="dica_3_titulo">Destaque realizações com números</string>
+    <string name="dica_3_desc">Em vez de "melhorei o processo", escreva "reduzi o tempo de entrega em 30%".</string>
+    <string name="dica_4_titulo">Inclua palavras-chave da vaga</string>
+    <string name="dica_4_desc">Muitas empresas usam ATS (rastreadores automáticos). Use os termos da descrição da vaga.</string>
+    <string name="btn_salvar_curriculo">Salvar Currículo</string>
+    <string name="erro_selecione_arquivo">Selecione um arquivo de currículo</string>
+    <string name="erro_arquivo_grande">Arquivo muito grande. O limite é 5 MB.</string>
+    <string name="erro_tipo_invalido">Formato não aceito. Use PDF, DOC ou DOCX.</string>
+    <string name="erro_arquivo_leitura">Não foi possível ler o arquivo. Tente novamente.</string>
+    <string name="dialog_curriculo_titulo">Currículo enviado!</string>
+    <string name="dialog_curriculo_msg">Seu currículo foi cadastrado com sucesso. Ele será compartilhado com recrutadores ao se candidatar a vagas.</string>
+
     <!-- Job cards data -->
     <string name="vaga_android">Desenvolvedor Android</string>
     <string name="vaga_backend">Engenheiro Backend</string>

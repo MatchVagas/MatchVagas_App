@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.edu.matchvagasapp.R;
+
 public class EmpresaFragment extends Fragment {
 
     private TextView txtNome;
@@ -34,7 +36,6 @@ public class EmpresaFragment extends Fragment {
         txtTelefone = view.findViewById(R.id.txtTelefoneEmpresa);
         txtSite = view.findViewById(R.id.txtSiteEmpresa);
 
-        // Dados exemplo
         txtNome.setText("Tech Solutions");
         txtDescricao.setText("Empresa especializada em desenvolvimento de software.");
         txtTelefone.setText("(11) 99999-9999");

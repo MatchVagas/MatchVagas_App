@@ -12,6 +12,7 @@
 
         <!-- Profile header -->
         <LinearLayout
+            android:id="@+id/perfil_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/primary_header"
@@ -26,12 +27,12 @@
                 android:layout_height="80dp"
                 android:background="@drawable/bg_avatar"
                 android:backgroundTint="#FFFFFF"
+                android:contentDescription="@string/avatar_desc"
                 android:gravity="center"
                 android:text="J"
                 android:textColor="@color/primary_header"
                 android:textSize="34sp"
-                android:textStyle="bold"
-                android:contentDescription="@string/avatar_desc" />
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -121,6 +122,7 @@
                     android:textSize="13sp" />
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_completar_agora"
                     android:layout_width="match_parent"
                     android:layout_height="44dp"
                     android:layout_marginTop="12dp"

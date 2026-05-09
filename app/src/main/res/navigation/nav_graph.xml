@@ -76,6 +76,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_dashboard_to_cadastro_curriculo"
+            app:destination="@id/cadastroCurriculoFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -101,6 +108,23 @@
         android:name="com.edu.matchvagasapp.features.perfil.EditarHabilidadesFragment"
         android:label="Habilidades"
         tools:layout="@layout/fragment_editar_habilidades" />
+
+    <fragment
+        android:id="@+id/cadastroCurriculoFragment"
+        android:name="com.edu.matchvagasapp.features.curriculo.CadastroCurriculoFragment"
+        android:label="Cadastro de Currículo"
+        tools:layout="@layout/fragment_cadastro_curriculo">
+        <action
+            android:id="@+id/btn_fechar"
+            app:destination="@id/perfilFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_cadastroCurriculoFragment_to_perfilFragment2"
+            app:destination="@id/perfilFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/detalhesVagaFragment"
@@ -133,5 +157,10 @@
         <argument android:name="vagaInicial" app:argType="string"  android:defaultValue="?" />
         <argument android:name="vagaMatch"   app:argType="integer" android:defaultValue="0" />
     </fragment>
+
+    <fragment
+        android:id="@+id/perfilFragment"
+        android:name="com.edu.matchvagasapp.features.perfil.PerfilFragment"
+        android:label="PerfilFragment" />
 
 </navigation>

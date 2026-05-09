@@ -41,5 +41,9 @@ public class PerfilFragment extends Fragment {
         view.findViewById(R.id.item_habilidades).setOnClickListener(v ->
                 NavHostFragment.findNavController(requireParentFragment())
                         .navigate(R.id.action_dashboard_to_editar_habilidades));
+
+        view.findViewById(R.id.btn_completar_agora).setOnClickListener(v ->
+                NavHostFragment.findNavController(requireParentFragment())
+                        .navigate(R.id.action_dashboard_to_cadastro_curriculo));
     }
 }

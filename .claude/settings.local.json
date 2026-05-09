@@ -9,7 +9,8 @@
       "Bash(Select-Object -ExpandProperty FullName)",
       "PowerShell(sort *)",
       "Bash(powershell *)",
-      "Bash(./gradlew assembleDebug --no-daemon)"
+      "Bash(./gradlew assembleDebug --no-daemon)",
+      "PowerShell(.\\\\gradlew assembleDebug 2>&1)"
     ]
   }
 }
