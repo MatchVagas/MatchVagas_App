@@ -1,12 +1,13 @@
 package com.edu.matchvagasapp.data.network;
 
+import com.edu.matchvagasapp.BuildConfig;
+
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    // 10.0.2.2 é o alias do localhost para o emulador Android
-    private static final String BASE_URL = "http://10.0.2.2:8080/";
+    private static final String BASE_URL = BuildConfig.BASE_URL;
 
     private static RetrofitClient instance;
     private final ApiService apiService;
