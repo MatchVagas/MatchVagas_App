@@ -18,6 +18,9 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.edu.matchvagasapp.R;
+import com.edu.matchvagasapp.data.model.HabilidadesRequest;
+import com.edu.matchvagasapp.data.model.HabilidadesResponse;
+import com.edu.matchvagasapp.data.repository.PerfilRepository;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -25,6 +28,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -53,8 +57,10 @@ public class EditarHabilidadesFragment extends Fragment {
     private ChipGroup chipGroupSugestoesTecnicas;
     private ChipGroup chipGroupSugestoesComportamentais;
     private View layoutVazio;
+    private MaterialButton btnSalvar;
 
     private final Set<String> habilidadesAdicionadas = new HashSet<>();
+    private final PerfilRepository perfilRepository = new PerfilRepository();
 
     @Nullable
     @Override
@@ -72,7 +78,7 @@ public class EditarHabilidadesFragment extends Fragment {
         setupCampoAdicionar(view);
         setupSugestoes();
         setupButtons(view);
-        prefillHabilidades();
+        carregarDados();
     }
 
     private void applyWindowInsets(View view) {
@@ -246,15 +252,32 @@ public class EditarHabilidadesFragment extends Fragment {
         view.findViewById(R.id.btn_voltar).setOnClickListener(v ->
                 NavHostFragment.findNavController(this).navigateUp());
 
-        view.findViewById(R.id.btn_salvar).setOnClickListener(v -> salvarHabilidades(view));
+        btnSalvar = view.findViewById(R.id.btn_salvar);
+        btnSalvar.setOnClickListener(v -> salvarHabilidades(view));
     }
 
-    private void prefillHabilidades() {
-        List<String> iniciais = Arrays.asList("Java", "Android", "Git");
-        for (String h : iniciais) {
-            adicionarHabilidade(h);
-            sincronizarSugestoes(h, true);
-        }
+    private void carregarDados() {
+        setCarregando(true);
+        perfilRepository.buscarHabilidades(new PerfilRepository.HabilidadesCallback() {
+            @Override
+            public void onSucesso(HabilidadesResponse dados) {
+                if (!isAdded()) return;
+                List<String> lista = dados.getHabilidades();
+                if (lista != null) {
+                    for (String h : lista) {
+                        adicionarHabilidade(h);
+                        sincronizarSugestoes(h, true);
+                    }
+                }
+                setCarregando(false);
+            }
+
+            @Override
+            public void onVazio() {
+                if (!isAdded()) return;
+                setCarregando(false);
+            }
+        });
     }
 
     private void salvarHabilidades(View rootView) {
@@ -263,9 +286,44 @@ public class EditarHabilidadesFragment extends Fragment {
                     getString(R.string.erro_habilidades_minimo), Snackbar.LENGTH_SHORT).show();
             return;
         }
-        Snackbar.make(rootView,
-                getString(R.string.sucesso_habilidades_salvas), Snackbar.LENGTH_SHORT).show();
-        rootView.postDelayed(() -> NavHostFragment.findNavController(this).navigateUp(), 1200);
+
+        List<String> lista = new ArrayList<>();
+        for (int i = 0; i < chipGroupHabilidades.getChildCount(); i++) {
+            lista.add(((Chip) chipGroupHabilidades.getChildAt(i)).getText().toString());
+        }
+
+        setLoading(true);
+
+        perfilRepository.atualizarHabilidades(new HabilidadesRequest(lista), new PerfilRepository.PerfilCallback() {
+            @Override
+            public void onSuccess() {
+                if (!isAdded()) return;
+                setLoading(false);
+                Snackbar.make(rootView, getString(R.string.sucesso_habilidades_salvas), Snackbar.LENGTH_SHORT).show();
+                rootView.postDelayed(
+                        () -> NavHostFragment.findNavController(EditarHabilidadesFragment.this).navigateUp(),
+                        1200);
+            }
+
+            @Override
+            public void onError(String mensagem) {
+                if (!isAdded()) return;
+                setLoading(false);
+                Snackbar.make(rootView, mensagem, Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void setCarregando(boolean carregando) {
+        if (btnSalvar == null) return;
+        btnSalvar.setEnabled(!carregando);
+        btnSalvar.setText(carregando ? getString(R.string.carregando) : getString(R.string.salvar));
+    }
+
+    private void setLoading(boolean loading) {
+        if (btnSalvar == null) return;
+        btnSalvar.setEnabled(!loading);
+        btnSalvar.setText(loading ? getString(R.string.salvando) : getString(R.string.salvar));
     }
 
     private void atualizarContadorEVazio() {

@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-05-11T19:44:20.837306771Z">
+        <DropdownSelection timestamp="2026-05-12T02:01:20.360806609Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=/home/romario/.android/avd/Small_Phone_2.avd" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=ZF523J8SSC" />
             </handle>
           </Target>
         </DropdownSelection>

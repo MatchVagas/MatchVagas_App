@@ -17,6 +17,9 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.edu.matchvagasapp.R;
+import com.edu.matchvagasapp.data.model.DadosPessoaisRequest;
+import com.edu.matchvagasapp.data.model.DadosPessoaisResponse;
+import com.edu.matchvagasapp.data.repository.PerfilRepository;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointBackward;
@@ -36,6 +39,9 @@ public class EditarDadosPessoaisFragment extends Fragment {
     private TextInputEditText etNome, etEmail, etTelefone, etNascimento;
     private TextInputEditText etCpf, etCep, etCidade, etLinkedin, etPortfolio;
     private AutoCompleteTextView etGenero, etEstado;
+    private MaterialButton btnSalvar;
+
+    private final PerfilRepository perfilRepository = new PerfilRepository();
 
     @Nullable
     @Override
@@ -53,7 +59,7 @@ public class EditarDadosPessoaisFragment extends Fragment {
         setupDropdowns();
         setupDatePicker();
         setupButtons(view);
-        prefillData();
+        carregarDados();
     }
 
     private void applyWindowInsets(View view) {
@@ -135,16 +141,41 @@ public class EditarDadosPessoaisFragment extends Fragment {
     private void setupButtons(View view) {
         view.findViewById(R.id.btn_voltar).setOnClickListener(v ->
                 NavHostFragment.findNavController(this).navigateUp());
-//                NavHostFragment.findNavController(this).navigateUp());
 
-        MaterialButton btnSalvar = view.findViewById(R.id.btn_salvar);
+        btnSalvar = view.findViewById(R.id.btn_salvar);
         btnSalvar.setOnClickListener(v -> salvarDados(view));
     }
 
-    private void prefillData() {
-        etNome.setText("João Silva");
-        etEmail.setText("joao.silva@email.com");
-        etTelefone.setText("(11) 99999-0000");
+    private void carregarDados() {
+        setCarregando(true);
+        perfilRepository.buscarDadosPessoais(new PerfilRepository.DadosPessoaisCallback() {
+            @Override
+            public void onSucesso(DadosPessoaisResponse dados) {
+                if (!isAdded()) return;
+                preencherCampos(dados);
+                setCarregando(false);
+            }
+
+            @Override
+            public void onVazio() {
+                if (!isAdded()) return;
+                setCarregando(false);
+            }
+        });
+    }
+
+    private void preencherCampos(DadosPessoaisResponse d) {
+        if (d.getNome() != null)           etNome.setText(d.getNome());
+        if (d.getEmail() != null)          etEmail.setText(d.getEmail());
+        if (d.getTelefone() != null)       etTelefone.setText(d.getTelefone());
+        if (d.getDataNascimento() != null) etNascimento.setText(d.getDataNascimento());
+        if (d.getCpf() != null)            etCpf.setText(d.getCpf());
+        if (d.getGenero() != null)         etGenero.setText(d.getGenero(), false);
+        if (d.getCep() != null)            etCep.setText(d.getCep());
+        if (d.getCidade() != null)         etCidade.setText(d.getCidade());
+        if (d.getEstado() != null)         etEstado.setText(d.getEstado(), false);
+        if (d.getLinkedin() != null)       etLinkedin.setText(d.getLinkedin());
+        if (d.getPortfolio() != null)      etPortfolio.setText(d.getPortfolio());
     }
 
     private void salvarDados(View rootView) {
@@ -168,7 +199,55 @@ public class EditarDadosPessoaisFragment extends Fragment {
 
         if (!valido) return;
 
-        Snackbar.make(rootView, getString(R.string.sucesso_dados_salvos), Snackbar.LENGTH_SHORT).show();
-        rootView.postDelayed(() -> NavHostFragment.findNavController(this).navigateUp(), 1200);
+        String telefone = etTelefone.getText() != null ? etTelefone.getText().toString().trim() : "";
+        String nascimento = etNascimento.getText() != null ? etNascimento.getText().toString().trim() : "";
+        String cpf = etCpf.getText() != null ? etCpf.getText().toString().trim() : "";
+        String genero = etGenero.getText() != null ? etGenero.getText().toString().trim() : "";
+        String cep = etCep.getText() != null ? etCep.getText().toString().trim() : "";
+        String cidade = etCidade.getText() != null ? etCidade.getText().toString().trim() : "";
+        String estado = etEstado.getText() != null ? etEstado.getText().toString().trim() : "";
+        String linkedin = etLinkedin.getText() != null ? etLinkedin.getText().toString().trim() : "";
+        String portfolio = etPortfolio.getText() != null ? etPortfolio.getText().toString().trim() : "";
+
+        setLoading(true);
+
+        DadosPessoaisRequest request = new DadosPessoaisRequest(
+                nome, email, telefone, nascimento, cpf,
+                genero, cep, cidade, estado, linkedin, portfolio);
+
+        perfilRepository.atualizarDadosPessoais(request, new PerfilRepository.PerfilCallback() {
+            @Override
+            public void onSuccess() {
+                if (!isAdded()) return;
+                setLoading(false);
+                Snackbar.make(rootView, getString(R.string.sucesso_dados_salvos), Snackbar.LENGTH_SHORT).show();
+                rootView.postDelayed(
+                        () -> NavHostFragment.findNavController(EditarDadosPessoaisFragment.this).navigateUp(),
+                        1200);
+            }
+
+            @Override
+            public void onError(String mensagem) {
+                if (!isAdded()) return;
+                setLoading(false);
+                Snackbar.make(rootView, mensagem, Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void setCarregando(boolean carregando) {
+        if (btnSalvar == null) return;
+        btnSalvar.setEnabled(!carregando);
+        btnSalvar.setText(carregando
+                ? getString(R.string.carregando)
+                : getString(R.string.btn_salvar_alteracoes));
+    }
+
+    private void setLoading(boolean loading) {
+        if (btnSalvar == null) return;
+        btnSalvar.setEnabled(!loading);
+        btnSalvar.setText(loading
+                ? getString(R.string.salvando)
+                : getString(R.string.btn_salvar_alteracoes));
     }
 }

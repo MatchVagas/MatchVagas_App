@@ -16,11 +16,16 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.edu.matchvagasapp.R;
+import com.edu.matchvagasapp.data.model.ExperienciaRequest;
+import com.edu.matchvagasapp.data.model.ExperienciaResponse;
+import com.edu.matchvagasapp.data.repository.PerfilRepository;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.List;
 
 public class EditarExperienciaFragment extends Fragment {
 
@@ -29,6 +34,9 @@ public class EditarExperienciaFragment extends Fragment {
     private AutoCompleteTextView etModalidade, etVinculo, etInicioMes, etSaidaMes;
     private MaterialSwitch switchAtual;
     private View containerSaida;
+    private MaterialButton btnSalvar;
+
+    private final PerfilRepository perfilRepository = new PerfilRepository();
 
     @Nullable
     @Override
@@ -46,7 +54,7 @@ public class EditarExperienciaFragment extends Fragment {
         setupDropdowns();
         setupSwitch();
         setupButtons(view);
-        prefillData();
+        carregarDados();
     }
 
     private void applyWindowInsets(View view) {
@@ -129,28 +137,48 @@ public class EditarExperienciaFragment extends Fragment {
         view.findViewById(R.id.btn_voltar).setOnClickListener(v ->
                 NavHostFragment.findNavController(this).navigateUp());
 
-        MaterialButton btnSalvar = view.findViewById(R.id.btn_salvar);
+        btnSalvar = view.findViewById(R.id.btn_salvar);
         btnSalvar.setOnClickListener(v -> salvarExperiencia(view));
     }
 
-    private void prefillData() {
-        etCargo.setText("Desenvolvedor Android");
-        etEmpresa.setText("TechCorp Brasil");
-        etModalidade.setText(getString(R.string.modalidade_hibrido), false);
-        etVinculo.setText(getString(R.string.vinculo_clt), false);
-        etCidadeExp.setText("São Paulo, SP");
-        etInicioMes.setText(getString(R.string.mes_mar), false);
-        etInicioAno.setText("2023");
-        switchAtual.setChecked(true);
+    private void carregarDados() {
+        setCarregando(true);
+        perfilRepository.buscarExperiencias(new PerfilRepository.ExperienciasCallback() {
+            @Override
+            public void onSucesso(List<ExperienciaResponse> lista) {
+                if (!isAdded()) return;
+                preencherCampos(lista.get(0));
+                setCarregando(false);
+            }
+
+            @Override
+            public void onVazio() {
+                if (!isAdded()) return;
+                setCarregando(false);
+            }
+        });
+    }
+
+    private void preencherCampos(ExperienciaResponse e) {
+        if (e.getCargo() != null)      etCargo.setText(e.getCargo());
+        if (e.getEmpresa() != null)    etEmpresa.setText(e.getEmpresa());
+        if (e.getModalidade() != null) etModalidade.setText(e.getModalidade(), false);
+        if (e.getVinculo() != null)    etVinculo.setText(e.getVinculo(), false);
+        if (e.getCidade() != null)     etCidadeExp.setText(e.getCidade());
+        if (e.getMesInicio() != null)  etInicioMes.setText(e.getMesInicio(), false);
+        if (e.getAnoInicio() != null)  etInicioAno.setText(e.getAnoInicio());
+
+        switchAtual.setChecked(e.isEmpregoAtual());
+        if (!e.isEmpregoAtual()) {
+            if (e.getMesSaida() != null) etSaidaMes.setText(e.getMesSaida(), false);
+            if (e.getAnoSaida() != null) etSaidaAno.setText(e.getAnoSaida());
+        }
     }
 
     private void salvarExperiencia(View rootView) {
-        String cargo = etCargo.getText() != null
-                ? etCargo.getText().toString().trim() : "";
-        String empresa = etEmpresa.getText() != null
-                ? etEmpresa.getText().toString().trim() : "";
-        String anoInicio = etInicioAno.getText() != null
-                ? etInicioAno.getText().toString().trim() : "";
+        String cargo = etCargo.getText() != null ? etCargo.getText().toString().trim() : "";
+        String empresa = etEmpresa.getText() != null ? etEmpresa.getText().toString().trim() : "";
+        String anoInicio = etInicioAno.getText() != null ? etInicioAno.getText().toString().trim() : "";
 
         tilCargo.setError(null);
         tilEmpresa.setError(null);
@@ -173,20 +201,66 @@ public class EditarExperienciaFragment extends Fragment {
             valido = false;
         }
 
-        if (!switchAtual.isChecked()) {
-            String anoSaida = etSaidaAno.getText() != null
+        String mesSaida = null;
+        String anoSaida = null;
+        boolean empregoAtual = switchAtual.isChecked();
+
+        if (!empregoAtual) {
+            String anoSaidaStr = etSaidaAno.getText() != null
                     ? etSaidaAno.getText().toString().trim() : "";
-            if (anoSaida.isEmpty() || anoSaida.length() != 4) {
+            if (anoSaidaStr.isEmpty() || anoSaidaStr.length() != 4) {
                 tilSaidaAno.setError(getString(R.string.erro_ano_invalido));
                 valido = false;
             } else {
                 tilSaidaAno.setError(null);
+                anoSaida = anoSaidaStr;
+                mesSaida = etSaidaMes.getText() != null
+                        ? etSaidaMes.getText().toString().trim() : "";
             }
         }
 
         if (!valido) return;
 
-        Snackbar.make(rootView, getString(R.string.sucesso_experiencia_salva), Snackbar.LENGTH_SHORT).show();
-        rootView.postDelayed(() -> NavHostFragment.findNavController(this).navigateUp(), 1200);
+        String modalidade = etModalidade.getText() != null ? etModalidade.getText().toString().trim() : "";
+        String vinculo = etVinculo.getText() != null ? etVinculo.getText().toString().trim() : "";
+        String cidade = etCidadeExp.getText() != null ? etCidadeExp.getText().toString().trim() : "";
+        String mesInicio = etInicioMes.getText() != null ? etInicioMes.getText().toString().trim() : "";
+
+        setLoading(true);
+
+        ExperienciaRequest request = new ExperienciaRequest(
+                cargo, empresa, modalidade, vinculo, cidade,
+                mesInicio, anoInicio, mesSaida, anoSaida, empregoAtual);
+
+        perfilRepository.adicionarExperiencia(request, new PerfilRepository.PerfilCallback() {
+            @Override
+            public void onSuccess() {
+                if (!isAdded()) return;
+                setLoading(false);
+                Snackbar.make(rootView, getString(R.string.sucesso_experiencia_salva), Snackbar.LENGTH_SHORT).show();
+                rootView.postDelayed(
+                        () -> NavHostFragment.findNavController(EditarExperienciaFragment.this).navigateUp(),
+                        1200);
+            }
+
+            @Override
+            public void onError(String mensagem) {
+                if (!isAdded()) return;
+                setLoading(false);
+                Snackbar.make(rootView, mensagem, Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void setCarregando(boolean carregando) {
+        if (btnSalvar == null) return;
+        btnSalvar.setEnabled(!carregando);
+        btnSalvar.setText(carregando ? getString(R.string.carregando) : getString(R.string.salvar));
+    }
+
+    private void setLoading(boolean loading) {
+        if (btnSalvar == null) return;
+        btnSalvar.setEnabled(!loading);
+        btnSalvar.setText(loading ? getString(R.string.salvando) : getString(R.string.salvar));
     }
 }

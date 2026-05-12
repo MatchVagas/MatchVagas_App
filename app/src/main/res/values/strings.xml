@@ -219,6 +219,8 @@
     <string name="erro_habilidade_limite">Limite de 20 habilidades atingido</string>
     <string name="erro_habilidades_minimo">Adicione pelo menos uma habilidade</string>
     <string name="sucesso_habilidades_salvas">Habilidades salvas com sucesso!</string>
+    <string name="salvando">Salvando…</string>
+    <string name="carregando">Carregando…</string>
 
     <!-- Cadastro de Currículo (upload) -->
     <string name="cadastro_curriculo_titulo">Cadastro de Currículo</string>

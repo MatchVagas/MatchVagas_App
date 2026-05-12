@@ -89,6 +89,65 @@ O `jwt.secret` em `backend/src/main/resources/application.properties` está hard
 
 ---
 
+## [2026-05-11] Integração do perfil do candidato com a API backend
+
+### Contexto
+As telas de edição do perfil (dados pessoais, experiência, formação e habilidades) tinham validação local completa, mas o botão "Salvar" apenas exibia um Snackbar e voltava sem enviar nada ao backend.
+
+### Arquivos criados
+
+#### `app/src/main/java/com/edu/matchvagasapp/data/model/DadosPessoaisRequest.java`
+Modelo de requisição para `PUT /api/perfil/dados-pessoais`. Campos: `nome`, `email`, `telefone`, `dataNascimento`, `cpf`, `genero`, `cep`, `cidade`, `estado`, `linkedin`, `portfolio`.
+
+#### `app/src/main/java/com/edu/matchvagasapp/data/model/ExperienciaRequest.java`
+Modelo de requisição para `POST /api/perfil/experiencias`. Campos: `cargo`, `empresa`, `modalidade`, `vinculo`, `cidade`, `mesInicio`, `anoInicio`, `mesSaida`, `anoSaida`, `empregoAtual`. Campos `mesSaida`/`anoSaida` são `null` quando `empregoAtual = true`.
+
+#### `app/src/main/java/com/edu/matchvagasapp/data/model/FormacaoRequest.java`
+Modelo de requisição para `POST /api/perfil/formacoes`. Campos: `instituicao`, `curso`, `grau`, `mesInicio`, `anoInicio`, `mesConclusao`, `anoConclusao`, `aindaCursando`. Campos de conclusão são `null` quando `aindaCursando = true`.
+
+#### `app/src/main/java/com/edu/matchvagasapp/data/model/HabilidadesRequest.java`
+Modelo de requisição para `PUT /api/perfil/habilidades`. Campo: `habilidades` (lista com os nomes originais extraídos dos chips).
+
+#### `app/src/main/java/com/edu/matchvagasapp/data/repository/PerfilRepository.java`
+Repositório com interface `PerfilCallback` (`onSuccess()` / `onError(String)`) e quatro métodos:
+- `atualizarDadosPessoais(request, callback)` → `PUT /api/perfil/dados-pessoais`
+- `adicionarExperiencia(request, callback)` → `POST /api/perfil/experiencias`
+- `adicionarFormacao(request, callback)` → `POST /api/perfil/formacoes`
+- `atualizarHabilidades(request, callback)` → `PUT /api/perfil/habilidades`
+Trata `401/403` como sessão expirada e falha de rede separadamente.
+
+### Arquivos modificados
+
+#### `app/src/main/java/com/edu/matchvagasapp/data/network/ApiService.java`
+- Adicionados imports e endpoints:
+  ```java
+  @PUT("api/perfil/dados-pessoais")   Call<Void> atualizarDadosPessoais(@Body DadosPessoaisRequest);
+  @POST("api/perfil/experiencias")    Call<Void> adicionarExperiencia(@Body ExperienciaRequest);
+  @POST("api/perfil/formacoes")       Call<Void> adicionarFormacao(@Body FormacaoRequest);
+  @PUT("api/perfil/habilidades")      Call<Void> atualizarHabilidades(@Body HabilidadesRequest);
+  ```
+
+#### Fragments `EditarDadosPessoaisFragment`, `EditarExperienciaFragment`, `EditarFormacaoFragment`, `EditarHabilidadesFragment`
+- Cada um ganhou `PerfilRepository` como campo e `setLoading(boolean)` que desabilita o botão e exibe "Salvando…".
+- O método de salvar agora coleta todos os campos, monta o request e chama o repositório.
+- Erros exibidos via `Snackbar`; navegação de volta só ocorre após resposta bem-sucedida.
+- Verificação `isAdded()` nos callbacks para evitar crash se o fragment for destruído durante a requisição.
+- Em habilidades: a lista é extraída dos chips (nomes com capitalização original), não do Set interno (lowercase).
+
+#### `app/src/main/res/values/strings.xml`
+- Adicionada string `salvando` = "Salvando…".
+
+### Endpoints backend utilizados
+```
+PUT  http://10.0.2.2:8080/api/perfil/dados-pessoais  (requer JWT — CANDIDATO)
+POST http://10.0.2.2:8080/api/perfil/experiencias    (requer JWT — CANDIDATO)
+POST http://10.0.2.2:8080/api/perfil/formacoes       (requer JWT — CANDIDATO)
+PUT  http://10.0.2.2:8080/api/perfil/habilidades     (requer JWT — CANDIDATO)
+```
+Todas as rotas são protegidas pelo `AuthInterceptor` (JWT injetado automaticamente).
+
+---
+
 ## [2026-05-10] Segurança — Token JWT armazenado com EncryptedSharedPreferences
 
 ### Contexto

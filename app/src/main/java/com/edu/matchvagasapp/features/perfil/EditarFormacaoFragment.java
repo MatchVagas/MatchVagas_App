@@ -16,11 +16,16 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.edu.matchvagasapp.R;
+import com.edu.matchvagasapp.data.model.FormacaoRequest;
+import com.edu.matchvagasapp.data.model.FormacaoResponse;
+import com.edu.matchvagasapp.data.repository.PerfilRepository;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.List;
 
 public class EditarFormacaoFragment extends Fragment {
 
@@ -29,6 +34,9 @@ public class EditarFormacaoFragment extends Fragment {
     private AutoCompleteTextView etGrau, etInicioMes, etConclusaoMes;
     private MaterialSwitch switchCursando;
     private View containerConclusao;
+    private MaterialButton btnSalvar;
+
+    private final PerfilRepository perfilRepository = new PerfilRepository();
 
     @Nullable
     @Override
@@ -46,7 +54,7 @@ public class EditarFormacaoFragment extends Fragment {
         setupDropdowns();
         setupSwitch();
         setupButtons(view);
-        prefillData();
+        carregarDados();
     }
 
     private void applyWindowInsets(View view) {
@@ -109,7 +117,6 @@ public class EditarFormacaoFragment extends Fragment {
     }
 
     private void setupSwitch() {
-        // Oculta o bloco de conclusão quando "Ainda cursando" está ativo
         atualizarVisibilidadeConclusao(switchCursando.isChecked());
         switchCursando.setOnCheckedChangeListener((btn, isChecked) ->
                 atualizarVisibilidadeConclusao(isChecked));
@@ -123,16 +130,40 @@ public class EditarFormacaoFragment extends Fragment {
         view.findViewById(R.id.btn_voltar).setOnClickListener(v ->
                 NavHostFragment.findNavController(this).navigateUp());
 
-        MaterialButton btnSalvar = view.findViewById(R.id.btn_salvar);
+        btnSalvar = view.findViewById(R.id.btn_salvar);
         btnSalvar.setOnClickListener(v -> salvarFormacao(view));
     }
 
-    private void prefillData() {
-        etInstituicao.setText("FATEC São Paulo");
-        etCurso.setText("Análise e Desenvolvimento de Sistemas");
-        etGrau.setText(getString(R.string.grau_graduacao), false);
-        etInicioMes.setText(getString(R.string.mes_fev), false);
-        etInicioAno.setText("2022");
+    private void carregarDados() {
+        setCarregando(true);
+        perfilRepository.buscarFormacoes(new PerfilRepository.FormacoesCallback() {
+            @Override
+            public void onSucesso(List<FormacaoResponse> lista) {
+                if (!isAdded()) return;
+                preencherCampos(lista.get(0));
+                setCarregando(false);
+            }
+
+            @Override
+            public void onVazio() {
+                if (!isAdded()) return;
+                setCarregando(false);
+            }
+        });
+    }
+
+    private void preencherCampos(FormacaoResponse f) {
+        if (f.getInstituicao() != null)  etInstituicao.setText(f.getInstituicao());
+        if (f.getCurso() != null)        etCurso.setText(f.getCurso());
+        if (f.getGrau() != null)         etGrau.setText(f.getGrau(), false);
+        if (f.getMesInicio() != null)    etInicioMes.setText(f.getMesInicio(), false);
+        if (f.getAnoInicio() != null)    etInicioAno.setText(f.getAnoInicio());
+
+        switchCursando.setChecked(f.isAindaCursando());
+        if (!f.isAindaCursando()) {
+            if (f.getMesConclusao() != null) etConclusaoMes.setText(f.getMesConclusao(), false);
+            if (f.getAnoConclusao() != null) etConclusaoAno.setText(f.getAnoConclusao());
+        }
     }
 
     private void salvarFormacao(View rootView) {
@@ -164,20 +195,64 @@ public class EditarFormacaoFragment extends Fragment {
             valido = false;
         }
 
-        if (!switchCursando.isChecked()) {
-            String anoConclusao = etConclusaoAno.getText() != null
+        String mesConclusao = null;
+        String anoConclusao = null;
+        boolean aindaCursando = switchCursando.isChecked();
+
+        if (!aindaCursando) {
+            String anoConclusaoStr = etConclusaoAno.getText() != null
                     ? etConclusaoAno.getText().toString().trim() : "";
-            if (anoConclusao.isEmpty() || anoConclusao.length() != 4) {
+            if (anoConclusaoStr.isEmpty() || anoConclusaoStr.length() != 4) {
                 tilConclusaoAno.setError(getString(R.string.erro_ano_invalido));
                 valido = false;
             } else {
                 tilConclusaoAno.setError(null);
+                anoConclusao = anoConclusaoStr;
+                mesConclusao = etConclusaoMes.getText() != null
+                        ? etConclusaoMes.getText().toString().trim() : "";
             }
         }
 
         if (!valido) return;
 
-        Snackbar.make(rootView, getString(R.string.sucesso_formacao_salva), Snackbar.LENGTH_SHORT).show();
-        rootView.postDelayed(() -> NavHostFragment.findNavController(this).navigateUp(), 1200);
+        String grau = etGrau.getText() != null ? etGrau.getText().toString().trim() : "";
+        String mesInicio = etInicioMes.getText() != null ? etInicioMes.getText().toString().trim() : "";
+
+        setLoading(true);
+
+        FormacaoRequest request = new FormacaoRequest(
+                instituicao, curso, grau, mesInicio, anoInicio,
+                mesConclusao, anoConclusao, aindaCursando);
+
+        perfilRepository.adicionarFormacao(request, new PerfilRepository.PerfilCallback() {
+            @Override
+            public void onSuccess() {
+                if (!isAdded()) return;
+                setLoading(false);
+                Snackbar.make(rootView, getString(R.string.sucesso_formacao_salva), Snackbar.LENGTH_SHORT).show();
+                rootView.postDelayed(
+                        () -> NavHostFragment.findNavController(EditarFormacaoFragment.this).navigateUp(),
+                        1200);
+            }
+
+            @Override
+            public void onError(String mensagem) {
+                if (!isAdded()) return;
+                setLoading(false);
+                Snackbar.make(rootView, mensagem, Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void setCarregando(boolean carregando) {
+        if (btnSalvar == null) return;
+        btnSalvar.setEnabled(!carregando);
+        btnSalvar.setText(carregando ? getString(R.string.carregando) : getString(R.string.salvar));
+    }
+
+    private void setLoading(boolean loading) {
+        if (btnSalvar == null) return;
+        btnSalvar.setEnabled(!loading);
+        btnSalvar.setText(loading ? getString(R.string.salvando) : getString(R.string.salvar));
     }
 }
