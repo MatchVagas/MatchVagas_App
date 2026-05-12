@@ -29,6 +29,7 @@ public class DetalhesVagaFragment extends Fragment {
     public static final String ARG_TIPO = "vagaTipo";
     public static final String ARG_SALARIO = "vagaSalario";
     public static final String ARG_MATCH = "vagaMatch";
+    public static final String ARG_VAGA_ID = "vagaId";
 
     @Nullable
     @Override
@@ -57,6 +58,7 @@ public class DetalhesVagaFragment extends Fragment {
         Bundle args = getArguments();
         String titulo = "", empresa = "", inicial = "?", local = "", tipo = "", salario = "";
         int match = 0;
+        long vagaId = -1;
 
         if (args != null) {
             titulo  = args.getString(ARG_TITULO, "");
@@ -66,6 +68,7 @@ public class DetalhesVagaFragment extends Fragment {
             tipo    = args.getString(ARG_TIPO, "");
             salario = args.getString(ARG_SALARIO, "");
             match   = args.getInt(ARG_MATCH, 0);
+            vagaId  = args.getLong(ARG_VAGA_ID, -1);
 
             setText(view, R.id.tvCompanyInitial, inicial);
             setText(view, R.id.tvJobTitle, titulo);
@@ -100,6 +103,7 @@ public class DetalhesVagaFragment extends Fragment {
 
         final String fTitulo = titulo, fEmpresa = empresa, fInicial = inicial;
         final int fMatch = match;
+        final long fVagaId = vagaId;
 
         MaterialButton btnApply = view.findViewById(R.id.btnApply);
         MaterialButton btnSave = view.findViewById(R.id.btnSave);
@@ -111,6 +115,7 @@ public class DetalhesVagaFragment extends Fragment {
             confirmarArgs.putString(ConfirmarCandidaturaFragment.ARG_EMPRESA, fEmpresa);
             confirmarArgs.putString(ConfirmarCandidaturaFragment.ARG_INICIAL, fInicial);
             confirmarArgs.putInt(ConfirmarCandidaturaFragment.ARG_MATCH, fMatch);
+            confirmarArgs.putLong(ConfirmarCandidaturaFragment.ARG_VAGA_ID, fVagaId);
             Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_main)
                     .navigate(R.id.action_detalhes_to_confirmar, confirmarArgs);
         });

@@ -16,11 +16,15 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.edu.matchvagasapp.R;
+import com.edu.matchvagasapp.data.model.CandidaturaRequest;
+import com.edu.matchvagasapp.data.model.CandidaturaResponse;
+import com.edu.matchvagasapp.data.repository.CandidaturaRepository;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
 public class ConfirmarCandidaturaFragment extends Fragment {
@@ -29,6 +33,11 @@ public class ConfirmarCandidaturaFragment extends Fragment {
     public static final String ARG_EMPRESA = "vagaEmpresa";
     public static final String ARG_INICIAL = "vagaInicial";
     public static final String ARG_MATCH   = "vagaMatch";
+    public static final String ARG_VAGA_ID = "vagaId";
+
+    private final CandidaturaRepository candidaturaRepository = new CandidaturaRepository();
+    private MaterialButton btnConfirmar;
+    private View rootView;
 
     @Nullable
     @Override
@@ -41,6 +50,7 @@ public class ConfirmarCandidaturaFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        rootView = view;
 
         MaterialToolbar toolbar = view.findViewById(R.id.toolbar);
         ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
@@ -55,11 +65,11 @@ public class ConfirmarCandidaturaFragment extends Fragment {
             v.setPadding(0, 0, 0, bars.bottom);
             return insets;
         });
+
         toolbar.setNavigationOnClickListener(v ->
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_main)
                         .popBackStack());
 
-        // Preenche resumo da vaga
         Bundle args = getArguments();
         if (args != null) {
             setText(view, R.id.tvCompanyInitial, args.getString(ARG_INICIAL, "?"));
@@ -69,7 +79,7 @@ public class ConfirmarCandidaturaFragment extends Fragment {
             setText(view, R.id.tvMatchBadge, match + "% Match");
         }
 
-        MaterialButton btnConfirmar     = view.findViewById(R.id.btnConfirmar);
+        btnConfirmar = view.findViewById(R.id.btnConfirmar);
         MaterialCheckBox checkboxTermos = view.findViewById(R.id.checkboxTermos);
 
         btnConfirmar.setOnClickListener(v -> {
@@ -81,14 +91,20 @@ public class ConfirmarCandidaturaFragment extends Fragment {
             enviarCandidatura(view);
         });
 
-        // Remove erro ao marcar checkbox
         checkboxTermos.setOnCheckedChangeListener((cb, checked) -> {
             if (checked) cb.setError(null);
         });
     }
 
     private void enviarCandidatura(View view) {
-        // Lê os toggles — serão enviados ao backend Spring Boot como campos da Candidatura
+        Bundle args = getArguments();
+        long vagaId = args != null ? args.getLong(ARG_VAGA_ID, -1) : -1;
+
+        if (vagaId == -1) {
+            Snackbar.make(view, "Não foi possível identificar a vaga. Tente novamente.", Snackbar.LENGTH_LONG).show();
+            return;
+        }
+
         boolean compartilharTelefone    = ((MaterialSwitch) view.findViewById(R.id.switchTelefone)).isChecked();
         boolean compartilharCurriculo   = ((MaterialSwitch) view.findViewById(R.id.switchCurriculo)).isChecked();
         boolean compartilharFormacao    = ((MaterialSwitch) view.findViewById(R.id.switchFormacao)).isChecked();
@@ -96,35 +112,65 @@ public class ConfirmarCandidaturaFragment extends Fragment {
         boolean compartilharHabilidades = ((MaterialSwitch) view.findViewById(R.id.switchHabilidades)).isChecked();
         boolean compartilharLinkedin    = ((MaterialSwitch) view.findViewById(R.id.switchLinkedin)).isChecked();
 
-        TextInputEditText etCarta    = view.findViewById(R.id.etCartaApresentacao);
-        TextInputEditText etSalario  = view.findViewById(R.id.etPretensaoSalarial);
+        TextInputEditText etCarta   = view.findViewById(R.id.etCartaApresentacao);
+        TextInputEditText etSalario = view.findViewById(R.id.etPretensaoSalarial);
 
         String cartaApresentacao = etCarta.getText() != null
                 ? etCarta.getText().toString().trim() : "";
         String pretensaoSalarial = etSalario.getText() != null
                 ? etSalario.getText().toString().trim() : "";
 
-        // TODO: integrar com API Spring Boot — POST /candidaturas
-        // CandidaturaRequest request = new CandidaturaRequest(
-        //     vagaId, compartilharTelefone, compartilharCurriculo, compartilharFormacao,
-        //     compartilharExperiencia, compartilharHabilidades, compartilharLinkedin,
-        //     cartaApresentacao, pretensaoSalarial
-        // );
+        CandidaturaRequest request = new CandidaturaRequest(
+                vagaId,
+                true,                    // compartilharObjetivoProfissional
+                true,                    // compartilharDisponibilidade
+                !pretensaoSalarial.isEmpty(), // compartilharPretensaoSalarial
+                compartilharCurriculo,
+                compartilharExperiencia,
+                compartilharFormacao,
+                compartilharTelefone,
+                false                    // compartilharEndereco (padrão privado)
+        );
 
-        mostrarDialogSucesso();
+        setEnvioLoading(true);
+
+        candidaturaRepository.candidatar(request, new CandidaturaRepository.CandidaturaCallback() {
+            @Override
+            public void onSuccess(CandidaturaResponse response) {
+                if (!isAdded()) return;
+                requireActivity().runOnUiThread(() -> {
+                    setEnvioLoading(false);
+                    mostrarDialogSucesso();
+                });
+            }
+
+            @Override
+            public void onError(String mensagem) {
+                if (!isAdded()) return;
+                requireActivity().runOnUiThread(() -> {
+                    setEnvioLoading(false);
+                    Snackbar.make(rootView, mensagem, Snackbar.LENGTH_LONG).show();
+                });
+            }
+        });
     }
 
     private void mostrarDialogSucesso() {
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle(getString(R.string.dialog_sucesso_title))
                 .setMessage(getString(R.string.dialog_sucesso_msg))
-                .setPositiveButton(getString(R.string.dialog_ok), (dialog, which) -> {
-                    // Volta até o dashboard (limpa a pilha de detalhes + confirmação)
-                    Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_main)
-                            .popBackStack(R.id.dashboardFragment, false);
-                })
+                .setPositiveButton(getString(R.string.dialog_ok), (dialog, which) ->
+                        Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_main)
+                                .popBackStack(R.id.dashboardFragment, false))
                 .setCancelable(false)
                 .show();
+    }
+
+    private void setEnvioLoading(boolean loading) {
+        if (btnConfirmar != null) {
+            btnConfirmar.setEnabled(!loading);
+            btnConfirmar.setText(loading ? "Enviando..." : "Confirmar candidatura");
+        }
     }
 
     private void setText(View root, int id, String text) {

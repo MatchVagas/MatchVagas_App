@@ -22,6 +22,11 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.edu.matchvagasapp.R;
+import com.edu.matchvagasapp.data.local.TokenManager;
+import com.edu.matchvagasapp.data.model.CadastroRequest;
+import com.edu.matchvagasapp.data.model.LoginResponse;
+import com.edu.matchvagasapp.data.model.UsuarioResponse;
+import com.edu.matchvagasapp.data.repository.AuthRepository;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.datepicker.CalendarConstraints;
@@ -40,6 +45,7 @@ public class CadastroFragment extends Fragment {
 
     private int currentStep = 0;
     private Long selectedDateMillis = null;
+    private final AuthRepository authRepository = new AuthRepository();
 
     private ViewFlipper viewFlipper;
     private MaterialButton btnVoltar, btnProximo;
@@ -358,7 +364,79 @@ public class CadastroFragment extends Fragment {
     }
 
     private void finalizarCadastro() {
-        // TODO: integrar com backend de autenticação
-        NavHostFragment.findNavController(this).navigate(R.id.action_cadastro_to_dashboard);
+        String nome = etNome.getText() != null ? etNome.getText().toString().trim() : "";
+        String email = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
+        String senha = etSenha.getText() != null ? etSenha.getText().toString() : "";
+        String tipoUsuario = getTipoUsuario();
+        String dataNascimento = formatarDataNascimento(selectedDateMillis);
+
+        CadastroRequest request = new CadastroRequest(nome, email, senha, dataNascimento, tipoUsuario, true);
+
+        setCadastroLoading(true);
+
+        authRepository.cadastrar(request, new AuthRepository.CadastroCallback() {
+            @Override
+            public void onSuccess(UsuarioResponse response) {
+                if (!isAdded()) return;
+                // Faz login automático após cadastro
+                authRepository.login(email, senha, new AuthRepository.LoginCallback() {
+                    @Override
+                    public void onSuccess(LoginResponse loginResponse) {
+                        if (!isAdded()) return;
+                        requireActivity().runOnUiThread(() -> {
+                            setCadastroLoading(false);
+                            new TokenManager(requireContext()).salvar(
+                                    loginResponse.getToken(),
+                                    loginResponse.getUsuarioId(),
+                                    loginResponse.getNome(),
+                                    loginResponse.getPerfil()
+                            );
+                            NavHostFragment.findNavController(CadastroFragment.this)
+                                    .navigate(R.id.action_cadastro_to_dashboard);
+                        });
+                    }
+
+                    @Override
+                    public void onError(String mensagem) {
+                        if (!isAdded()) return;
+                        requireActivity().runOnUiThread(() -> {
+                            setCadastroLoading(false);
+                            // Cadastro ok mas login falhou — redireciona para a tela de login
+                            NavHostFragment.findNavController(CadastroFragment.this).popBackStack();
+                        });
+                    }
+                });
+            }
+
+            @Override
+            public void onError(String mensagem) {
+                if (!isAdded()) return;
+                requireActivity().runOnUiThread(() -> {
+                    setCadastroLoading(false);
+                    Snackbar.make(viewFlipper, mensagem, Snackbar.LENGTH_LONG).show();
+                });
+            }
+        });
+    }
+
+    private String getTipoUsuario() {
+        int checkedId = chipGroupTipoUsuario.getCheckedChipId();
+        if (checkedId == R.id.chip_empresa) return "EMPRESA";
+        return "CANDIDATO";
+    }
+
+    private String formatarDataNascimento(Long millis) {
+        if (millis == null) return null;
+        java.util.Calendar cal = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC"));
+        cal.setTimeInMillis(millis);
+        return String.format(java.util.Locale.US, "%04d-%02d-%02dT00:00:00",
+                cal.get(java.util.Calendar.YEAR),
+                cal.get(java.util.Calendar.MONTH) + 1,
+                cal.get(java.util.Calendar.DAY_OF_MONTH));
+    }
+
+    private void setCadastroLoading(boolean loading) {
+        btnProximo.setEnabled(!loading);
+        btnProximo.setText(loading ? "Aguarde..." : "Finalizar");
     }
 }

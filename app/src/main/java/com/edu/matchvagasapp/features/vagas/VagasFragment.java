@@ -43,21 +43,21 @@ public class VagasFragment extends Fragment {
         });
 
         view.findViewById(R.id.btn_detalhes_1).setOnClickListener(v ->
-                navigateToDetalhes("Desenvolvedor Android", "TechCorp Brasil", "T",
+                navigateToDetalhes(-1, "Desenvolvedor Android", "TechCorp Brasil", "T",
                         "São Paulo, SP", "CLT", "R$ 6.000 – R$ 9.000", 92));
 
         view.findViewById(R.id.btn_detalhes_2).setOnClickListener(v ->
-                navigateToDetalhes("Engenheiro Backend", "Startup XYZ", "S",
+                navigateToDetalhes(-1, "Engenheiro Backend", "Startup XYZ", "S",
                         "Remoto", "CLT", "R$ 8.000 – R$ 12.000", 87));
 
         view.findViewById(R.id.btn_detalhes_3).setOnClickListener(v ->
-                navigateToDetalhes("UX Designer", "Design Studio", "D",
+                navigateToDetalhes(-1, "UX Designer", "Design Studio", "D",
                         "São Paulo, SP", "PJ", "R$ 7.000 – R$ 10.000", 79));
 
         return view;
     }
 
-    private void navigateToDetalhes(String titulo, String empresa, String inicial,
+    private void navigateToDetalhes(long vagaId, String titulo, String empresa, String inicial,
                                     String local, String tipo, String salario, int match) {
         Bundle args = new Bundle();
         args.putString(DetalhesVagaFragment.ARG_TITULO, titulo);
@@ -67,6 +67,7 @@ public class VagasFragment extends Fragment {
         args.putString(DetalhesVagaFragment.ARG_TIPO, tipo);
         args.putString(DetalhesVagaFragment.ARG_SALARIO, salario);
         args.putInt(DetalhesVagaFragment.ARG_MATCH, match);
+        args.putLong(DetalhesVagaFragment.ARG_VAGA_ID, vagaId);
         Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_main)
                 .navigate(R.id.action_dashboard_to_detalhes, args);
     }
