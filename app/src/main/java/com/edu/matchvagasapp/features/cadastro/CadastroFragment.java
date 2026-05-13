@@ -1,6 +1,8 @@
 package com.edu.matchvagasapp.features.cadastro;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,11 +26,13 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.edu.matchvagasapp.R;
 import com.edu.matchvagasapp.data.local.TokenManager;
 import com.edu.matchvagasapp.data.model.CadastroRequest;
+import com.edu.matchvagasapp.data.model.CandidatoPerfilRequest;
+import com.edu.matchvagasapp.data.model.LocalizacaoRequest;
 import com.edu.matchvagasapp.data.model.LoginResponse;
+import com.edu.matchvagasapp.data.model.TelefoneRequest;
 import com.edu.matchvagasapp.data.model.UsuarioResponse;
 import com.edu.matchvagasapp.data.repository.AuthRepository;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -53,22 +57,20 @@ public class CadastroFragment extends Fragment {
     private View stepBar1, stepBar2, stepBar3;
     private TextView tvLabel1, tvLabel2, tvLabel3;
 
-    // Etapa 1
-    private ChipGroup chipGroupTipoUsuario;
-    private TextInputLayout tilNome, tilEmail, tilSenha, tilConfirmarSenha, tilDataNascimento;
-    private TextInputEditText etNome, etEmail, etSenha, etConfirmarSenha, etDataNascimento;
+    // Etapa 1 — Dados Pessoais
+    private TextInputLayout tilNome, tilCpf, tilEmail, tilSenha, tilConfirmarSenha, tilDataNascimento;
+    private TextInputEditText etNome, etCpf, etEmail, etSenha, etConfirmarSenha, etDataNascimento;
     private CheckBox cbTermos;
 
-    // Etapa 2
-    private TextInputLayout tilArea;
-    private AutoCompleteTextView etArea;
-    private ChipGroup chipGroupNivel, chipGroupContrato;
-
-    // Etapa 3
-    private TextInputLayout tilCidade, tilEstado;
-    private TextInputEditText etCidade;
+    // Etapa 2 — Endereço
+    private TextInputLayout tilCep, tilLogradouro, tilNumeroEnd, tilComplemento, tilBairro, tilCidade, tilEstado;
+    private TextInputEditText etCep, etLogradouro, etNumeroEnd, etComplemento, etBairro, etCidade;
     private AutoCompleteTextView etEstado;
-    private MaterialSwitch switchRemoto, switchRelocacao;
+
+    // Etapa 3 — Contato
+    private TextInputLayout tilTelefone;
+    private TextInputEditText etTelefone;
+    private MaterialSwitch switchWhatsapp;
 
     @Nullable
     @Override
@@ -84,6 +86,7 @@ public class CadastroFragment extends Fragment {
         applyWindowInsets(view);
         initViews(view);
         setupDropdowns();
+        setupMasks();
         setupNavigation();
     }
 
@@ -121,31 +124,41 @@ public class CadastroFragment extends Fragment {
         tvLabel2       = view.findViewById(R.id.tv_label_2);
         tvLabel3       = view.findViewById(R.id.tv_label_3);
 
-        chipGroupTipoUsuario = view.findViewById(R.id.chip_group_tipo_usuario);
-
+        // Etapa 1
         tilNome           = view.findViewById(R.id.til_nome);
+        tilCpf            = view.findViewById(R.id.til_cpf);
         tilEmail          = view.findViewById(R.id.til_email);
         tilSenha          = view.findViewById(R.id.til_senha);
         tilConfirmarSenha = view.findViewById(R.id.til_confirmar_senha);
         tilDataNascimento = view.findViewById(R.id.til_data_nascimento);
         etNome            = view.findViewById(R.id.et_nome);
+        etCpf             = view.findViewById(R.id.et_cpf);
         etEmail           = view.findViewById(R.id.et_email);
         etSenha           = view.findViewById(R.id.et_senha);
         etConfirmarSenha  = view.findViewById(R.id.et_confirmar_senha);
         etDataNascimento  = view.findViewById(R.id.et_data_nascimento);
         cbTermos          = view.findViewById(R.id.cb_termos);
 
-        tilArea          = view.findViewById(R.id.til_area);
-        etArea           = view.findViewById(R.id.et_area);
-        chipGroupNivel   = view.findViewById(R.id.chip_group_nivel);
-        chipGroupContrato = view.findViewById(R.id.chip_group_contrato);
+        // Etapa 2
+        tilCep        = view.findViewById(R.id.til_cep);
+        tilLogradouro = view.findViewById(R.id.til_logradouro);
+        tilNumeroEnd  = view.findViewById(R.id.til_numero_end);
+        tilComplemento = view.findViewById(R.id.til_complemento);
+        tilBairro     = view.findViewById(R.id.til_bairro);
+        tilCidade     = view.findViewById(R.id.til_cidade);
+        tilEstado     = view.findViewById(R.id.til_estado);
+        etCep         = view.findViewById(R.id.et_cep);
+        etLogradouro  = view.findViewById(R.id.et_logradouro);
+        etNumeroEnd   = view.findViewById(R.id.et_numero_end);
+        etComplemento = view.findViewById(R.id.et_complemento);
+        etBairro      = view.findViewById(R.id.et_bairro);
+        etCidade      = view.findViewById(R.id.et_cidade);
+        etEstado      = view.findViewById(R.id.et_estado);
 
-        tilCidade      = view.findViewById(R.id.til_cidade);
-        tilEstado      = view.findViewById(R.id.til_estado);
-        etCidade       = view.findViewById(R.id.et_cidade);
-        etEstado       = view.findViewById(R.id.et_estado);
-        switchRemoto   = view.findViewById(R.id.switch_remoto);
-        switchRelocacao = view.findViewById(R.id.switch_relocacao);
+        // Etapa 3
+        tilTelefone    = view.findViewById(R.id.til_telefone);
+        etTelefone     = view.findViewById(R.id.et_telefone);
+        switchWhatsapp = view.findViewById(R.id.switch_whatsapp);
 
         etDataNascimento.setOnClickListener(v -> showDatePicker());
 
@@ -180,15 +193,6 @@ public class CadastroFragment extends Fragment {
     }
 
     private void setupDropdowns() {
-        String[] areas = {
-            "Tecnologia", "Design", "Marketing", "Finanças",
-            "Recursos Humanos", "Vendas", "Jurídico", "Educação",
-            "Saúde", "Engenharia", "Administração", "Outro"
-        };
-        etArea.setAdapter(new ArrayAdapter<>(
-            requireContext(), android.R.layout.simple_dropdown_item_1line, areas
-        ));
-
         String[] estados = {
             "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA",
             "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN",
@@ -197,6 +201,60 @@ public class CadastroFragment extends Fragment {
         etEstado.setAdapter(new ArrayAdapter<>(
             requireContext(), android.R.layout.simple_dropdown_item_1line, estados
         ));
+    }
+
+    private void setupMasks() {
+        etCpf.addTextChangedListener(cpfMask());
+        etCep.addTextChangedListener(cepMask());
+    }
+
+    private TextWatcher cpfMask() {
+        return new TextWatcher() {
+            boolean updating = false;
+
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (updating) return;
+                updating = true;
+                String raw = s.toString().replaceAll("[^0-9]", "");
+                if (raw.length() > 11) raw = raw.substring(0, 11);
+                StringBuilder formatted = new StringBuilder();
+                for (int i = 0; i < raw.length(); i++) {
+                    if (i == 3 || i == 6) formatted.append('.');
+                    if (i == 9) formatted.append('-');
+                    formatted.append(raw.charAt(i));
+                }
+                s.replace(0, s.length(), formatted.toString());
+                updating = false;
+            }
+        };
+    }
+
+    private TextWatcher cepMask() {
+        return new TextWatcher() {
+            boolean updating = false;
+
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (updating) return;
+                updating = true;
+                String raw = s.toString().replaceAll("[^0-9]", "");
+                if (raw.length() > 8) raw = raw.substring(0, 8);
+                StringBuilder formatted = new StringBuilder();
+                for (int i = 0; i < raw.length(); i++) {
+                    if (i == 5) formatted.append('-');
+                    formatted.append(raw.charAt(i));
+                }
+                s.replace(0, s.length(), formatted.toString());
+                updating = false;
+            }
+        };
     }
 
     private void setupNavigation() {
@@ -241,7 +299,6 @@ public class CadastroFragment extends Fragment {
         tvLabel3.setTextColor(currentStep >= 2 ? activeColor : inactiveColor);
 
         tvStepCounter.setText("Passo " + (currentStep + 1) + " de 3");
-
         btnVoltar.setVisibility(currentStep > 0 ? View.VISIBLE : View.GONE);
         btnProximo.setText(currentStep == 2 ? "Finalizar" : "Próximo");
     }
@@ -258,12 +315,7 @@ public class CadastroFragment extends Fragment {
     private boolean validateEtapa1() {
         boolean valid = true;
 
-        if (chipGroupTipoUsuario.getCheckedChipId() == View.NO_ID) {
-            Snackbar.make(viewFlipper, "Selecione o tipo de conta", Snackbar.LENGTH_SHORT).show();
-            valid = false;
-        }
-
-        String nome = etNome.getText() != null ? etNome.getText().toString().trim() : "";
+        String nome = str(etNome);
         if (nome.isEmpty()) {
             tilNome.setError("Nome é obrigatório");
             valid = false;
@@ -274,7 +326,18 @@ public class CadastroFragment extends Fragment {
             tilNome.setError(null);
         }
 
-        String email = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
+        String cpfRaw = str(etCpf).replaceAll("[^0-9]", "");
+        if (cpfRaw.isEmpty()) {
+            tilCpf.setError("CPF é obrigatório");
+            valid = false;
+        } else if (cpfRaw.length() != 11) {
+            tilCpf.setError("CPF deve ter 11 dígitos");
+            valid = false;
+        } else {
+            tilCpf.setError(null);
+        }
+
+        String email = str(etEmail);
         if (email.isEmpty()) {
             tilEmail.setError("E-mail é obrigatório");
             valid = false;
@@ -285,7 +348,7 @@ public class CadastroFragment extends Fragment {
             tilEmail.setError(null);
         }
 
-        String senha = etSenha.getText() != null ? etSenha.getText().toString() : "";
+        String senha = str(etSenha);
         if (senha.isEmpty()) {
             tilSenha.setError("Senha é obrigatória");
             valid = false;
@@ -296,7 +359,7 @@ public class CadastroFragment extends Fragment {
             tilSenha.setError(null);
         }
 
-        String confirmar = etConfirmarSenha.getText() != null ? etConfirmarSenha.getText().toString() : "";
+        String confirmar = str(etConfirmarSenha);
         if (confirmar.isEmpty()) {
             tilConfirmarSenha.setError("Confirme sua senha");
             valid = false;
@@ -325,26 +388,42 @@ public class CadastroFragment extends Fragment {
     private boolean validateEtapa2() {
         boolean valid = true;
 
-        String area = etArea.getText() != null ? etArea.getText().toString().trim() : "";
-        if (area.isEmpty()) {
-            tilArea.setError("Selecione uma área de atuação");
+        String cepRaw = str(etCep).replaceAll("[^0-9]", "");
+        if (cepRaw.isEmpty()) {
+            tilCep.setError("CEP é obrigatório");
+            valid = false;
+        } else if (cepRaw.length() != 8) {
+            tilCep.setError("CEP deve ter 8 dígitos");
             valid = false;
         } else {
-            tilArea.setError(null);
+            tilCep.setError(null);
         }
 
-        if (chipGroupNivel.getCheckedChipId() == View.NO_ID) {
-            Snackbar.make(viewFlipper, "Selecione seu nível de experiência", Snackbar.LENGTH_SHORT).show();
+        String logradouro = str(etLogradouro);
+        if (logradouro.isEmpty()) {
+            tilLogradouro.setError("Logradouro é obrigatório");
             valid = false;
+        } else {
+            tilLogradouro.setError(null);
         }
 
-        return valid;
-    }
+        String numeroEnd = str(etNumeroEnd);
+        if (numeroEnd.isEmpty()) {
+            tilNumeroEnd.setError("Número é obrigatório");
+            valid = false;
+        } else {
+            tilNumeroEnd.setError(null);
+        }
 
-    private boolean validateEtapa3() {
-        boolean valid = true;
+        String bairro = str(etBairro);
+        if (bairro.isEmpty()) {
+            tilBairro.setError("Bairro é obrigatório");
+            valid = false;
+        } else {
+            tilBairro.setError(null);
+        }
 
-        String cidade = etCidade.getText() != null ? etCidade.getText().toString().trim() : "";
+        String cidade = str(etCidade);
         if (cidade.isEmpty()) {
             tilCidade.setError("Cidade é obrigatória");
             valid = false;
@@ -352,7 +431,7 @@ public class CadastroFragment extends Fragment {
             tilCidade.setError(null);
         }
 
-        String estado = etEstado.getText() != null ? etEstado.getText().toString().trim() : "";
+        String estado = str(etEstado);
         if (estado.isEmpty()) {
             tilEstado.setError("Selecione o estado");
             valid = false;
@@ -363,14 +442,23 @@ public class CadastroFragment extends Fragment {
         return valid;
     }
 
+    private boolean validateEtapa3() {
+        String telefone = str(etTelefone).replaceAll("[^0-9]", "");
+        if (!telefone.isEmpty() && telefone.length() < 10) {
+            tilTelefone.setError("Número de telefone inválido");
+            return false;
+        }
+        tilTelefone.setError(null);
+        return true;
+    }
+
     private void finalizarCadastro() {
-        String nome = etNome.getText() != null ? etNome.getText().toString().trim() : "";
-        String email = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
-        String senha = etSenha.getText() != null ? etSenha.getText().toString() : "";
-        String tipoUsuario = getTipoUsuario();
+        String nome = str(etNome);
+        String email = str(etEmail);
+        String senha = str(etSenha);
         String dataNascimento = formatarDataNascimento(selectedDateMillis);
 
-        CadastroRequest request = new CadastroRequest(nome, email, senha, dataNascimento, tipoUsuario, true);
+        CadastroRequest request = new CadastroRequest(nome, email, senha, dataNascimento, "CANDIDATO", true);
 
         setCadastroLoading(true);
 
@@ -378,21 +466,18 @@ public class CadastroFragment extends Fragment {
             @Override
             public void onSuccess(UsuarioResponse response) {
                 if (!isAdded()) return;
-                // Faz login automático após cadastro
                 authRepository.login(email, senha, new AuthRepository.LoginCallback() {
                     @Override
                     public void onSuccess(LoginResponse loginResponse) {
                         if (!isAdded()) return;
                         requireActivity().runOnUiThread(() -> {
-                            setCadastroLoading(false);
                             new TokenManager(requireContext()).salvar(
                                     loginResponse.getToken(),
                                     loginResponse.getUsuarioId(),
                                     loginResponse.getNome(),
                                     loginResponse.getPerfil()
                             );
-                            NavHostFragment.findNavController(CadastroFragment.this)
-                                    .navigate(R.id.action_cadastro_to_dashboard);
+                            criarPerfilCandidato();
                         });
                     }
 
@@ -401,7 +486,6 @@ public class CadastroFragment extends Fragment {
                         if (!isAdded()) return;
                         requireActivity().runOnUiThread(() -> {
                             setCadastroLoading(false);
-                            // Cadastro ok mas login falhou — redireciona para a tela de login
                             NavHostFragment.findNavController(CadastroFragment.this).popBackStack();
                         });
                     }
@@ -419,10 +503,49 @@ public class CadastroFragment extends Fragment {
         });
     }
 
-    private String getTipoUsuario() {
-        int checkedId = chipGroupTipoUsuario.getCheckedChipId();
-        if (checkedId == R.id.chip_empresa) return "EMPRESA";
-        return "CANDIDATO";
+    private void criarPerfilCandidato() {
+        String cpf = str(etCpf).replaceAll("[^0-9]", "");
+        String cep = str(etCep).replaceAll("[^0-9]", "");
+        String cepFormatado = cep.length() == 8 ? cep.substring(0, 5) + "-" + cep.substring(5) : cep;
+
+        LocalizacaoRequest localizacao = new LocalizacaoRequest(
+                str(etLogradouro),
+                str(etNumeroEnd),
+                str(etComplemento),
+                str(etBairro),
+                cepFormatado,
+                str(etCidade),
+                str(etEstado)
+        );
+
+        String telefoneRaw = str(etTelefone).replaceAll("[^0-9]", "");
+        TelefoneRequest telefone = telefoneRaw.isEmpty()
+                ? null
+                : new TelefoneRequest(str(etTelefone), switchWhatsapp.isChecked());
+
+        CandidatoPerfilRequest perfilRequest = new CandidatoPerfilRequest(cpf, telefone, localizacao);
+
+        authRepository.criarPerfilCandidato(perfilRequest, new AuthRepository.CriarPerfilCallback() {
+            @Override
+            public void onSuccess() {
+                if (!isAdded()) return;
+                requireActivity().runOnUiThread(() -> {
+                    setCadastroLoading(false);
+                    NavHostFragment.findNavController(CadastroFragment.this)
+                            .navigate(R.id.action_cadastro_to_dashboard);
+                });
+            }
+
+            @Override
+            public void onError(String mensagem) {
+                if (!isAdded()) return;
+                requireActivity().runOnUiThread(() -> {
+                    setCadastroLoading(false);
+                    NavHostFragment.findNavController(CadastroFragment.this)
+                            .navigate(R.id.action_cadastro_to_dashboard);
+                });
+            }
+        });
     }
 
     private String formatarDataNascimento(Long millis) {
@@ -433,6 +556,14 @@ public class CadastroFragment extends Fragment {
                 cal.get(java.util.Calendar.YEAR),
                 cal.get(java.util.Calendar.MONTH) + 1,
                 cal.get(java.util.Calendar.DAY_OF_MONTH));
+    }
+
+    private String str(TextInputEditText et) {
+        return et.getText() != null ? et.getText().toString().trim() : "";
+    }
+
+    private String str(AutoCompleteTextView et) {
+        return et.getText() != null ? et.getText().toString().trim() : "";
     }
 
     private void setCadastroLoading(boolean loading) {

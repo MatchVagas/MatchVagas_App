@@ -29,7 +29,7 @@ public class LocalizacaoRequest {
                                String bairro, String cep, String cidade, String estado) {
         this.logradouro = logradouro;
         this.numero = numero;
-        this.complemento = complemento;
+        this.complemento = complemento.isEmpty() ? null : complemento;
         this.bairro = bairro;
         this.cep = cep;
         this.cidade = cidade;

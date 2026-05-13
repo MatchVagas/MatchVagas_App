@@ -8,14 +8,14 @@ public class TelefoneRequest {
     private final String numero;
 
     @SerializedName("tipoTelefoneId")
-    private final Long tipoTelefoneId;
+    private final long tipoTelefoneId;
 
     @SerializedName("wpp")
     private final boolean wpp;
 
-    public TelefoneRequest(String numero, Long tipoTelefoneId, boolean wpp) {
+    public TelefoneRequest(String numero, boolean wpp) {
         this.numero = numero;
-        this.tipoTelefoneId = tipoTelefoneId;
+        this.tipoTelefoneId = 1L;
         this.wpp = wpp;
     }
 }
