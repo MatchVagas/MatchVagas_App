@@ -1,6 +1,7 @@
 package com.edu.matchvagasapp.data.network;
 
 import com.edu.matchvagasapp.data.model.CadastroRequest;
+import com.edu.matchvagasapp.data.model.CandidatoPerfilRequest;
 import com.edu.matchvagasapp.data.model.CandidaturaRequest;
 import com.edu.matchvagasapp.data.model.CandidaturaResponse;
 import com.edu.matchvagasapp.data.model.DadosPessoaisRequest;
@@ -19,6 +20,8 @@ import com.edu.matchvagasapp.data.model.VagaResponse;
 import java.util.List;
 
 import retrofit2.Call;
+import okhttp3.ResponseBody;
+
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -35,6 +38,9 @@ public interface ApiService {
 
     @POST("api/auth/login")
     Call<LoginResponse> login(@Body LoginRequest request);
+
+    @POST("api/candidatos")
+    Call<okhttp3.ResponseBody> criarPerfilCandidato(@Body CandidatoPerfilRequest request);
 
     // ── Vagas ─────────────────────────────────────────────────────────────────
 
