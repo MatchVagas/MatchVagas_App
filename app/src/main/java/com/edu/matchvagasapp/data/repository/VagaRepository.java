@@ -1,6 +1,7 @@
 package com.edu.matchvagasapp.data.repository;
 
 import com.edu.matchvagasapp.data.model.VagaResponse;
+import com.edu.matchvagasapp.data.network.ApiService;
 import com.edu.matchvagasapp.data.network.RetrofitClient;
 
 import java.util.List;
@@ -10,6 +11,16 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class VagaRepository {
+
+    private final ApiService apiService;
+
+    public VagaRepository() {
+        this.apiService = RetrofitClient.getInstance().getApiService();
+    }
+
+    VagaRepository(ApiService apiService) {
+        this.apiService = apiService;
+    }
 
     public interface VagasCallback {
         void onSuccess(List<VagaResponse> vagas);
@@ -22,7 +33,7 @@ public class VagaRepository {
     }
 
     public void buscarVagas(VagasCallback callback) {
-        RetrofitClient.getInstance().getApiService()
+        apiService
                 .buscarVagas(null, null, null, null)
                 .enqueue(new Callback<List<VagaResponse>>() {
                     @Override
@@ -43,7 +54,7 @@ public class VagaRepository {
     }
 
     public void buscarVagaPorId(Long id, VagaCallback callback) {
-        RetrofitClient.getInstance().getApiService()
+        apiService
                 .buscarVagaPorId(id)
                 .enqueue(new Callback<VagaResponse>() {
                     @Override
@@ -66,7 +77,7 @@ public class VagaRepository {
     }
 
     public void buscarVagasFiltradas(String titulo, String areaAtuacao, VagasCallback callback) {
-        RetrofitClient.getInstance().getApiService()
+        apiService
                 .buscarVagas(titulo, areaAtuacao, null, null)
                 .enqueue(new Callback<List<VagaResponse>>() {
                     @Override

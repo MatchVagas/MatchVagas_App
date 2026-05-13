@@ -5,6 +5,7 @@ import com.edu.matchvagasapp.data.model.CandidatoPerfilRequest;
 import com.edu.matchvagasapp.data.model.LoginRequest;
 import com.edu.matchvagasapp.data.model.LoginResponse;
 import com.edu.matchvagasapp.data.model.UsuarioResponse;
+import com.edu.matchvagasapp.data.network.ApiService;
 import com.edu.matchvagasapp.data.network.RetrofitClient;
 
 import okhttp3.ResponseBody;
@@ -13,6 +14,16 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AuthRepository {
+
+    private final ApiService apiService;
+
+    public AuthRepository() {
+        this.apiService = RetrofitClient.getInstance().getApiService();
+    }
+
+    AuthRepository(ApiService apiService) {
+        this.apiService = apiService;
+    }
 
     public interface CriarPerfilCallback {
         void onSuccess();
@@ -30,7 +41,7 @@ public class AuthRepository {
     }
 
     public void cadastrar(CadastroRequest request, CadastroCallback callback) {
-        RetrofitClient.getInstance().getApiService().cadastrar(request)
+        apiService.cadastrar(request)
                 .enqueue(new Callback<UsuarioResponse>() {
                     @Override
                     public void onResponse(Call<UsuarioResponse> call, Response<UsuarioResponse> response) {
@@ -51,7 +62,7 @@ public class AuthRepository {
     }
 
     public void criarPerfilCandidato(CandidatoPerfilRequest request, CriarPerfilCallback callback) {
-        RetrofitClient.getInstance().getApiService().criarPerfilCandidato(request)
+        apiService.criarPerfilCandidato(request)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -71,7 +82,7 @@ public class AuthRepository {
 
     public void login(String email, String senha, LoginCallback callback) {
         LoginRequest request = new LoginRequest(email, senha);
-        RetrofitClient.getInstance().getApiService().login(request)
+        apiService.login(request)
                 .enqueue(new Callback<LoginResponse>() {
                     @Override
                     public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {

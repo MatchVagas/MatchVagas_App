@@ -8,6 +8,7 @@ import com.edu.matchvagasapp.data.model.FormacaoRequest;
 import com.edu.matchvagasapp.data.model.FormacaoResponse;
 import com.edu.matchvagasapp.data.model.HabilidadesRequest;
 import com.edu.matchvagasapp.data.model.HabilidadesResponse;
+import com.edu.matchvagasapp.data.network.ApiService;
 import com.edu.matchvagasapp.data.network.RetrofitClient;
 
 import java.util.List;
@@ -17,6 +18,16 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PerfilRepository {
+
+    private final ApiService apiService;
+
+    public PerfilRepository() {
+        this.apiService = RetrofitClient.getInstance().getApiService();
+    }
+
+    PerfilRepository(ApiService apiService) {
+        this.apiService = apiService;
+    }
 
     // ── Callbacks de salvamento ───────────────────────────────────────────────
 
@@ -50,7 +61,7 @@ public class PerfilRepository {
     // ── Buscar ────────────────────────────────────────────────────────────────
 
     public void buscarDadosPessoais(DadosPessoaisCallback callback) {
-        RetrofitClient.getInstance().getApiService().buscarDadosPessoais()
+        apiService.buscarDadosPessoais()
                 .enqueue(new Callback<DadosPessoaisResponse>() {
                     @Override
                     public void onResponse(Call<DadosPessoaisResponse> call,
@@ -70,7 +81,7 @@ public class PerfilRepository {
     }
 
     public void buscarExperiencias(ExperienciasCallback callback) {
-        RetrofitClient.getInstance().getApiService().buscarExperiencias()
+        apiService.buscarExperiencias()
                 .enqueue(new Callback<List<ExperienciaResponse>>() {
                     @Override
                     public void onResponse(Call<List<ExperienciaResponse>> call,
@@ -91,7 +102,7 @@ public class PerfilRepository {
     }
 
     public void buscarFormacoes(FormacoesCallback callback) {
-        RetrofitClient.getInstance().getApiService().buscarFormacoes()
+        apiService.buscarFormacoes()
                 .enqueue(new Callback<List<FormacaoResponse>>() {
                     @Override
                     public void onResponse(Call<List<FormacaoResponse>> call,
@@ -112,7 +123,7 @@ public class PerfilRepository {
     }
 
     public void buscarHabilidades(HabilidadesCallback callback) {
-        RetrofitClient.getInstance().getApiService().buscarHabilidades()
+        apiService.buscarHabilidades()
                 .enqueue(new Callback<HabilidadesResponse>() {
                     @Override
                     public void onResponse(Call<HabilidadesResponse> call,
@@ -134,7 +145,7 @@ public class PerfilRepository {
     // ── Salvar ────────────────────────────────────────────────────────────────
 
     public void atualizarDadosPessoais(DadosPessoaisRequest request, PerfilCallback callback) {
-        RetrofitClient.getInstance().getApiService().atualizarDadosPessoais(request)
+        apiService.atualizarDadosPessoais(request)
                 .enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
@@ -155,7 +166,7 @@ public class PerfilRepository {
     }
 
     public void adicionarExperiencia(ExperienciaRequest request, PerfilCallback callback) {
-        RetrofitClient.getInstance().getApiService().adicionarExperiencia(request)
+        apiService.adicionarExperiencia(request)
                 .enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
@@ -176,7 +187,7 @@ public class PerfilRepository {
     }
 
     public void adicionarFormacao(FormacaoRequest request, PerfilCallback callback) {
-        RetrofitClient.getInstance().getApiService().adicionarFormacao(request)
+        apiService.adicionarFormacao(request)
                 .enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
@@ -197,7 +208,7 @@ public class PerfilRepository {
     }
 
     public void atualizarHabilidades(HabilidadesRequest request, PerfilCallback callback) {
-        RetrofitClient.getInstance().getApiService().atualizarHabilidades(request)
+        apiService.atualizarHabilidades(request)
                 .enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {

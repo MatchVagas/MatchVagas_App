@@ -1,13 +1,25 @@
 package com.edu.matchvagasapp.data.repository;
 
 import com.edu.matchvagasapp.data.model.CandidatoPerfilRequest;
+import com.edu.matchvagasapp.data.network.ApiService;
 import com.edu.matchvagasapp.data.network.RetrofitClient;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CandidatoRepository {
+
+    private final ApiService apiService;
+
+    public CandidatoRepository() {
+        this.apiService = RetrofitClient.getInstance().getApiService();
+    }
+
+    CandidatoRepository(ApiService apiService) {
+        this.apiService = apiService;
+    }
 
     public interface CriarPerfilCallback {
         void onSuccess();
@@ -15,10 +27,10 @@ public class CandidatoRepository {
     }
 
     public void criarPerfil(CandidatoPerfilRequest request, CriarPerfilCallback callback) {
-        RetrofitClient.getInstance().getApiService().criarPerfilCandidato(request)
-                .enqueue(new Callback<Void>() {
+        apiService.criarPerfilCandidato(request)
+                .enqueue(new Callback<ResponseBody>() {
                     @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
                             callback.onSuccess();
                         } else if (response.code() == 400) {
@@ -29,7 +41,7 @@ public class CandidatoRepository {
                     }
 
                     @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
                         callback.onError("Sem conexão com o servidor");
                     }
                 });

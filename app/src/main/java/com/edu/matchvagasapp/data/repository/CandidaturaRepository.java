@@ -2,6 +2,7 @@ package com.edu.matchvagasapp.data.repository;
 
 import com.edu.matchvagasapp.data.model.CandidaturaRequest;
 import com.edu.matchvagasapp.data.model.CandidaturaResponse;
+import com.edu.matchvagasapp.data.network.ApiService;
 import com.edu.matchvagasapp.data.network.RetrofitClient;
 
 import java.util.List;
@@ -11,6 +12,16 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CandidaturaRepository {
+
+    private final ApiService apiService;
+
+    public CandidaturaRepository() {
+        this.apiService = RetrofitClient.getInstance().getApiService();
+    }
+
+    CandidaturaRepository(ApiService apiService) {
+        this.apiService = apiService;
+    }
 
     public interface CandidaturaCallback {
         void onSuccess(CandidaturaResponse response);
@@ -23,7 +34,7 @@ public class CandidaturaRepository {
     }
 
     public void candidatar(CandidaturaRequest request, CandidaturaCallback callback) {
-        RetrofitClient.getInstance().getApiService()
+        apiService
                 .candidatar(request)
                 .enqueue(new Callback<CandidaturaResponse>() {
                     @Override
@@ -48,7 +59,7 @@ public class CandidaturaRepository {
     }
 
     public void minhasCandidaturas(CandidaturasCallback callback) {
-        RetrofitClient.getInstance().getApiService()
+        apiService
                 .minhasCandidaturas()
                 .enqueue(new Callback<List<CandidaturaResponse>>() {
                     @Override
