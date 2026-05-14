@@ -10,35 +10,21 @@ public class FormacaoRequest {
     @SerializedName("curso")
     private final String curso;
 
-    @SerializedName("grau")
-    private final String grau;
+    @SerializedName("nivel")
+    private final String nivel;
 
-    @SerializedName("mesInicio")
-    private final String mesInicio;
+    @SerializedName("dataInicio")
+    private final String dataInicio;
 
-    @SerializedName("anoInicio")
-    private final String anoInicio;
+    @SerializedName("dataFim")
+    private final String dataFim;
 
-    @SerializedName("mesConclusao")
-    private final String mesConclusao;
-
-    @SerializedName("anoConclusao")
-    private final String anoConclusao;
-
-    @SerializedName("aindaCursando")
-    private final boolean aindaCursando;
-
-    public FormacaoRequest(String instituicao, String curso, String grau,
-                           String mesInicio, String anoInicio,
-                           String mesConclusao, String anoConclusao,
-                           boolean aindaCursando) {
+    public FormacaoRequest(String instituicao, String curso, String nivel,
+                           String dataInicio, String dataFim) {
         this.instituicao = instituicao;
         this.curso = curso;
-        this.grau = grau;
-        this.mesInicio = mesInicio;
-        this.anoInicio = anoInicio;
-        this.mesConclusao = mesConclusao;
-        this.anoConclusao = anoConclusao;
-        this.aindaCursando = aindaCursando;
+        this.nivel = nivel;
+        this.dataInicio = dataInicio;
+        this.dataFim = dataFim;
     }
 }

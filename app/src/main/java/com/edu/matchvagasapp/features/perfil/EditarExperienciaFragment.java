@@ -30,11 +30,15 @@ import java.util.List;
 public class EditarExperienciaFragment extends Fragment {
 
     private TextInputLayout tilCargo, tilEmpresa, tilInicioAno, tilSaidaAno;
-    private TextInputEditText etCargo, etEmpresa, etCidadeExp, etInicioAno, etSaidaAno;
-    private AutoCompleteTextView etModalidade, etVinculo, etInicioMes, etSaidaMes;
+    private TextInputEditText etCargo, etEmpresa, etInicioAno, etSaidaAno;
+    private TextInputEditText etResponsabilidades;
+    private AutoCompleteTextView etInicioMes, etSaidaMes;
     private MaterialSwitch switchAtual;
     private View containerSaida;
     private MaterialButton btnSalvar;
+
+    /** id do registro carregado; null = criar novo via POST, não-null = editar via PUT */
+    private Long experienciaId = null;
 
     private final PerfilRepository perfilRepository = new PerfilRepository();
 
@@ -71,44 +75,24 @@ public class EditarExperienciaFragment extends Fragment {
     }
 
     private void initViews(View view) {
-        tilCargo = view.findViewById(R.id.til_cargo);
-        tilEmpresa = view.findViewById(R.id.til_empresa);
+        tilCargo     = view.findViewById(R.id.til_cargo);
+        tilEmpresa   = view.findViewById(R.id.til_empresa);
         tilInicioAno = view.findViewById(R.id.til_inicio_ano);
-        tilSaidaAno = view.findViewById(R.id.til_saida_ano);
+        tilSaidaAno  = view.findViewById(R.id.til_saida_ano);
 
-        etCargo = view.findViewById(R.id.et_cargo);
-        etEmpresa = view.findViewById(R.id.et_empresa);
-        etModalidade = view.findViewById(R.id.et_modalidade);
-        etVinculo = view.findViewById(R.id.et_vinculo);
-        etCidadeExp = view.findViewById(R.id.et_cidade_exp);
-        etInicioMes = view.findViewById(R.id.et_inicio_mes);
-        etInicioAno = view.findViewById(R.id.et_inicio_ano);
-        etSaidaMes = view.findViewById(R.id.et_saida_mes);
-        etSaidaAno = view.findViewById(R.id.et_saida_ano);
+        etCargo            = view.findViewById(R.id.et_cargo);
+        etEmpresa          = view.findViewById(R.id.et_empresa);
+        etInicioMes        = view.findViewById(R.id.et_inicio_mes);
+        etInicioAno        = view.findViewById(R.id.et_inicio_ano);
+        etSaidaMes         = view.findViewById(R.id.et_saida_mes);
+        etSaidaAno         = view.findViewById(R.id.et_saida_ano);
+        etResponsabilidades = view.findViewById(R.id.et_responsabilidades);
 
-        switchAtual = view.findViewById(R.id.switch_atual);
+        switchAtual    = view.findViewById(R.id.switch_atual);
         containerSaida = view.findViewById(R.id.container_saida);
     }
 
     private void setupDropdowns() {
-        String[] modalidades = {
-                getString(R.string.modalidade_presencial),
-                getString(R.string.modalidade_remoto),
-                getString(R.string.modalidade_hibrido)
-        };
-        etModalidade.setAdapter(new ArrayAdapter<>(
-                requireContext(), android.R.layout.simple_dropdown_item_1line, modalidades));
-
-        String[] vinculos = {
-                getString(R.string.vinculo_clt),
-                getString(R.string.vinculo_pj),
-                getString(R.string.vinculo_estagio),
-                getString(R.string.vinculo_freelance),
-                getString(R.string.vinculo_temporario)
-        };
-        etVinculo.setAdapter(new ArrayAdapter<>(
-                requireContext(), android.R.layout.simple_dropdown_item_1line, vinculos));
-
         String[] meses = {
                 getString(R.string.mes_jan), getString(R.string.mes_fev),
                 getString(R.string.mes_mar), getString(R.string.mes_abr),
@@ -160,23 +144,36 @@ public class EditarExperienciaFragment extends Fragment {
     }
 
     private void preencherCampos(ExperienciaResponse e) {
-        if (e.getCargo() != null)      etCargo.setText(e.getCargo());
-        if (e.getEmpresa() != null)    etEmpresa.setText(e.getEmpresa());
-        if (e.getModalidade() != null) etModalidade.setText(e.getModalidade(), false);
-        if (e.getVinculo() != null)    etVinculo.setText(e.getVinculo(), false);
-        if (e.getCidade() != null)     etCidadeExp.setText(e.getCidade());
-        if (e.getMesInicio() != null)  etInicioMes.setText(e.getMesInicio(), false);
-        if (e.getAnoInicio() != null)  etInicioAno.setText(e.getAnoInicio());
+        experienciaId = (e.getId() != null && e.getId() > 0) ? e.getId() : null;
 
-        switchAtual.setChecked(e.isEmpregoAtual());
-        if (!e.isEmpregoAtual()) {
-            if (e.getMesSaida() != null) etSaidaMes.setText(e.getMesSaida(), false);
-            if (e.getAnoSaida() != null) etSaidaAno.setText(e.getAnoSaida());
+        if (e.getCargo() != null)   etCargo.setText(e.getCargo());
+        if (e.getEmpresa() != null) etEmpresa.setText(e.getEmpresa());
+        if (e.getDescricao() != null) etResponsabilidades.setText(e.getDescricao());
+
+        // dataInicio → "MM/yyyy": split into mes/ano for UI dropdowns
+        if (e.getDataInicio() != null && e.getDataInicio().contains("/")) {
+            String[] partes = e.getDataInicio().split("/", 2);
+            String mesNum = partes[0];
+            String ano    = partes[1];
+            String mesNome = mesNumeroParaNome(mesNum);
+            if (mesNome != null) etInicioMes.setText(mesNome, false);
+            etInicioAno.setText(ano);
+        }
+
+        boolean empregoAtual = e.isEmpregoAtual();
+        switchAtual.setChecked(empregoAtual);
+        if (!empregoAtual && e.getDataFim() != null && e.getDataFim().contains("/")) {
+            String[] partes = e.getDataFim().split("/", 2);
+            String mesNum = partes[0];
+            String ano    = partes[1];
+            String mesNome = mesNumeroParaNome(mesNum);
+            if (mesNome != null) etSaidaMes.setText(mesNome, false);
+            etSaidaAno.setText(ano);
         }
     }
 
     private void salvarExperiencia(View rootView) {
-        String cargo = etCargo.getText() != null ? etCargo.getText().toString().trim() : "";
+        String cargo   = etCargo.getText()   != null ? etCargo.getText().toString().trim()   : "";
         String empresa = etEmpresa.getText() != null ? etEmpresa.getText().toString().trim() : "";
         String anoInicio = etInicioAno.getText() != null ? etInicioAno.getText().toString().trim() : "";
 
@@ -201,9 +198,8 @@ public class EditarExperienciaFragment extends Fragment {
             valido = false;
         }
 
-        String mesSaida = null;
-        String anoSaida = null;
         boolean empregoAtual = switchAtual.isChecked();
+        String dataFim = null;
 
         if (!empregoAtual) {
             String anoSaidaStr = etSaidaAno.getText() != null
@@ -213,26 +209,29 @@ public class EditarExperienciaFragment extends Fragment {
                 valido = false;
             } else {
                 tilSaidaAno.setError(null);
-                anoSaida = anoSaidaStr;
-                mesSaida = etSaidaMes.getText() != null
+                String mesSaidaNome = etSaidaMes.getText() != null
                         ? etSaidaMes.getText().toString().trim() : "";
+                String mesSaidaNum = mesNomeParaNumero(mesSaidaNome);
+                dataFim = (mesSaidaNum != null ? mesSaidaNum : mesSaidaNome) + "/" + anoSaidaStr;
             }
         }
 
         if (!valido) return;
 
-        String modalidade = etModalidade.getText() != null ? etModalidade.getText().toString().trim() : "";
-        String vinculo = etVinculo.getText() != null ? etVinculo.getText().toString().trim() : "";
-        String cidade = etCidadeExp.getText() != null ? etCidadeExp.getText().toString().trim() : "";
-        String mesInicio = etInicioMes.getText() != null ? etInicioMes.getText().toString().trim() : "";
+        String mesInicioNome = etInicioMes.getText() != null
+                ? etInicioMes.getText().toString().trim() : "";
+        String mesInicioNum = mesNomeParaNumero(mesInicioNome);
+        String dataInicio = (mesInicioNum != null ? mesInicioNum : mesInicioNome) + "/" + anoInicio;
+
+        String descricao = etResponsabilidades.getText() != null
+                ? etResponsabilidades.getText().toString().trim() : null;
+        if (descricao != null && descricao.isEmpty()) descricao = null;
 
         setLoading(true);
 
-        ExperienciaRequest request = new ExperienciaRequest(
-                cargo, empresa, modalidade, vinculo, cidade,
-                mesInicio, anoInicio, mesSaida, anoSaida, empregoAtual);
+        ExperienciaRequest request = new ExperienciaRequest(empresa, cargo, descricao, dataInicio, dataFim);
 
-        perfilRepository.adicionarExperiencia(request, new PerfilRepository.PerfilCallback() {
+        PerfilRepository.PerfilCallback callback = new PerfilRepository.PerfilCallback() {
             @Override
             public void onSuccess() {
                 if (!isAdded()) return;
@@ -249,8 +248,53 @@ public class EditarExperienciaFragment extends Fragment {
                 setLoading(false);
                 Snackbar.make(rootView, mensagem, Snackbar.LENGTH_LONG).show();
             }
-        });
+        };
+
+        if (experienciaId != null) {
+            perfilRepository.atualizarExperiencia(experienciaId, request, callback);
+        } else {
+            perfilRepository.adicionarExperiencia(request, callback);
+        }
     }
+
+    // ── Helpers para conversão mês nome ↔ número ──────────────────────────────
+
+    private String mesNomeParaNumero(String nome) {
+        if (nome == null || nome.isEmpty()) return null;
+        String[] nomes = {
+                getString(R.string.mes_jan), getString(R.string.mes_fev),
+                getString(R.string.mes_mar), getString(R.string.mes_abr),
+                getString(R.string.mes_mai), getString(R.string.mes_jun),
+                getString(R.string.mes_jul), getString(R.string.mes_ago),
+                getString(R.string.mes_set), getString(R.string.mes_out),
+                getString(R.string.mes_nov), getString(R.string.mes_dez)
+        };
+        for (int i = 0; i < nomes.length; i++) {
+            if (nomes[i].equalsIgnoreCase(nome)) {
+                return String.format("%02d", i + 1);
+            }
+        }
+        return null;
+    }
+
+    private String mesNumeroParaNome(String numero) {
+        if (numero == null || numero.isEmpty()) return null;
+        try {
+            int idx = Integer.parseInt(numero) - 1;
+            String[] nomes = {
+                    getString(R.string.mes_jan), getString(R.string.mes_fev),
+                    getString(R.string.mes_mar), getString(R.string.mes_abr),
+                    getString(R.string.mes_mai), getString(R.string.mes_jun),
+                    getString(R.string.mes_jul), getString(R.string.mes_ago),
+                    getString(R.string.mes_set), getString(R.string.mes_out),
+                    getString(R.string.mes_nov), getString(R.string.mes_dez)
+            };
+            if (idx >= 0 && idx < nomes.length) return nomes[idx];
+        } catch (NumberFormatException ignored) { }
+        return null;
+    }
+
+    // ── Estado do botão ───────────────────────────────────────────────────────
 
     private void setCarregando(boolean carregando) {
         if (btnSalvar == null) return;

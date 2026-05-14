@@ -1,5 +1,6 @@
 package com.edu.matchvagasapp.data.repository;
 
+import com.edu.matchvagasapp.data.model.SugestaoVagaResponse;
 import com.edu.matchvagasapp.data.model.VagaResponse;
 import com.edu.matchvagasapp.data.network.ApiService;
 import com.edu.matchvagasapp.data.network.RetrofitClient;
@@ -30,6 +31,34 @@ public class VagaRepository {
     public interface VagaCallback {
         void onSuccess(VagaResponse vaga);
         void onError(String mensagem);
+    }
+
+    public interface SugestoesCallback {
+        void onSuccess(List<SugestaoVagaResponse> sugestoes);
+        void onError(String mensagem);
+    }
+
+    public void buscarSugestoes(SugestoesCallback callback) {
+        apiService
+                .buscarSugestoes()
+                .enqueue(new Callback<List<SugestaoVagaResponse>>() {
+                    @Override
+                    public void onResponse(Call<List<SugestaoVagaResponse>> call,
+                                           Response<List<SugestaoVagaResponse>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            callback.onSuccess(response.body());
+                        } else if (response.code() == 401 || response.code() == 403) {
+                            callback.onError("Não autorizado (código " + response.code() + ")");
+                        } else {
+                            callback.onError("Erro ao carregar sugestões (código " + response.code() + ")");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<SugestaoVagaResponse>> call, Throwable t) {
+                        callback.onError("Sem conexão com o servidor");
+                    }
+                });
     }
 
     public void buscarVagas(VagasCallback callback) {

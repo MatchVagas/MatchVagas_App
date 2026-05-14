@@ -25,7 +25,6 @@ import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.TextInputEditText;
 
 public class ConfirmarCandidaturaFragment extends Fragment {
 
@@ -105,31 +104,22 @@ public class ConfirmarCandidaturaFragment extends Fragment {
             return;
         }
 
+        // Lê apenas os campos suportados pelo backend CandidaturaRequestDTO
         boolean compartilharTelefone    = ((MaterialSwitch) view.findViewById(R.id.switchTelefone)).isChecked();
         boolean compartilharCurriculo   = ((MaterialSwitch) view.findViewById(R.id.switchCurriculo)).isChecked();
         boolean compartilharFormacao    = ((MaterialSwitch) view.findViewById(R.id.switchFormacao)).isChecked();
         boolean compartilharExperiencia = ((MaterialSwitch) view.findViewById(R.id.switchExperiencia)).isChecked();
-        boolean compartilharHabilidades = ((MaterialSwitch) view.findViewById(R.id.switchHabilidades)).isChecked();
-        boolean compartilharLinkedin    = ((MaterialSwitch) view.findViewById(R.id.switchLinkedin)).isChecked();
-
-        TextInputEditText etCarta   = view.findViewById(R.id.etCartaApresentacao);
-        TextInputEditText etSalario = view.findViewById(R.id.etPretensaoSalarial);
-
-        String cartaApresentacao = etCarta.getText() != null
-                ? etCarta.getText().toString().trim() : "";
-        String pretensaoSalarial = etSalario.getText() != null
-                ? etSalario.getText().toString().trim() : "";
 
         CandidaturaRequest request = new CandidaturaRequest(
                 vagaId,
-                true,                    // compartilharObjetivoProfissional
-                true,                    // compartilharDisponibilidade
-                !pretensaoSalarial.isEmpty(), // compartilharPretensaoSalarial
+                true,   // compartilharObjetivoProfissional
+                true,   // compartilharDisponibilidade
+                true,   // compartilharPretensaoSalarial
                 compartilharCurriculo,
                 compartilharExperiencia,
                 compartilharFormacao,
                 compartilharTelefone,
-                false                    // compartilharEndereco (padrão privado)
+                false   // compartilharEndereco (padrão privado)
         );
 
         setEnvioLoading(true);

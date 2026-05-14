@@ -77,6 +77,13 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
+            android:id="@+id/action_dashboard_to_editar_perfil_profissional"
+            app:destination="@id/editarPerfilProfissionalFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
             android:id="@+id/action_dashboard_to_cadastro_curriculo"
             app:destination="@id/cadastroCurriculoFragment"
             app:enterAnim="@anim/slide_in_right"
@@ -129,6 +136,16 @@
         tools:layout="@layout/fragment_editar_habilidades">
         <action
             android:id="@+id/action_editarHabilidadesFragment_to_perfilFragment"
+            app:destination="@id/perfilFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/editarPerfilProfissionalFragment"
+        android:name="com.edu.matchvagasapp.features.perfil.EditarPerfilProfissionalFragment"
+        android:label="Perfil Profissional"
+        tools:layout="@layout/fragment_editar_perfil_profissional">
+        <action
+            android:id="@+id/action_editarPerfilProfissionalFragment_to_perfilFragment"
             app:destination="@id/perfilFragment" />
     </fragment>
 

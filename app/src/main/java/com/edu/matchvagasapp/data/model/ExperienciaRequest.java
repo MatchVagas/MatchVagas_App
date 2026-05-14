@@ -4,49 +4,27 @@ import com.google.gson.annotations.SerializedName;
 
 public class ExperienciaRequest {
 
-    @SerializedName("cargo")
-    private final String cargo;
-
     @SerializedName("empresa")
     private final String empresa;
 
-    @SerializedName("modalidade")
-    private final String modalidade;
+    @SerializedName("cargo")
+    private final String cargo;
 
-    @SerializedName("vinculo")
-    private final String vinculo;
+    @SerializedName("descricao")
+    private final String descricao; // nullable
 
-    @SerializedName("cidade")
-    private final String cidade;
+    @SerializedName("dataInicio")
+    private final String dataInicio; // "MM/yyyy"
 
-    @SerializedName("mesInicio")
-    private final String mesInicio;
+    @SerializedName("dataFim")
+    private final String dataFim; // null ou "MM/yyyy"
 
-    @SerializedName("anoInicio")
-    private final String anoInicio;
-
-    @SerializedName("mesSaida")
-    private final String mesSaida;
-
-    @SerializedName("anoSaida")
-    private final String anoSaida;
-
-    @SerializedName("empregoAtual")
-    private final boolean empregoAtual;
-
-    public ExperienciaRequest(String cargo, String empresa, String modalidade,
-                              String vinculo, String cidade, String mesInicio,
-                              String anoInicio, String mesSaida, String anoSaida,
-                              boolean empregoAtual) {
-        this.cargo = cargo;
+    public ExperienciaRequest(String empresa, String cargo, String descricao,
+                              String dataInicio, String dataFim) {
         this.empresa = empresa;
-        this.modalidade = modalidade;
-        this.vinculo = vinculo;
-        this.cidade = cidade;
-        this.mesInicio = mesInicio;
-        this.anoInicio = anoInicio;
-        this.mesSaida = mesSaida;
-        this.anoSaida = anoSaida;
-        this.empregoAtual = empregoAtual;
+        this.cargo = cargo;
+        this.descricao = descricao;
+        this.dataInicio = dataInicio;
+        this.dataFim = dataFim;
     }
 }

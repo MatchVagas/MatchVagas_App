@@ -152,17 +152,61 @@ public class EditarFormacaoFragment extends Fragment {
         });
     }
 
+    // Converte número de mês ("08") para nome localizado ("Agosto")
+    private String numeroParaNomeMes(String numeroMes) {
+        if (numeroMes == null || numeroMes.isEmpty()) return "";
+        String[] nomes = {
+            getString(R.string.mes_jan), getString(R.string.mes_fev),
+            getString(R.string.mes_mar), getString(R.string.mes_abr),
+            getString(R.string.mes_mai), getString(R.string.mes_jun),
+            getString(R.string.mes_jul), getString(R.string.mes_ago),
+            getString(R.string.mes_set), getString(R.string.mes_out),
+            getString(R.string.mes_nov), getString(R.string.mes_dez)
+        };
+        try {
+            int idx = Integer.parseInt(numeroMes.trim()) - 1;
+            if (idx >= 0 && idx < 12) return nomes[idx];
+        } catch (NumberFormatException ignored) { }
+        return numeroMes;
+    }
+
+    // Converte nome de mês localizado ("Agosto") para número com dois dígitos ("08")
+    private String nomeParaNumeroMes(String nomeMes) {
+        if (nomeMes == null || nomeMes.isEmpty()) return "01";
+        String[] nomes = {
+            getString(R.string.mes_jan), getString(R.string.mes_fev),
+            getString(R.string.mes_mar), getString(R.string.mes_abr),
+            getString(R.string.mes_mai), getString(R.string.mes_jun),
+            getString(R.string.mes_jul), getString(R.string.mes_ago),
+            getString(R.string.mes_set), getString(R.string.mes_out),
+            getString(R.string.mes_nov), getString(R.string.mes_dez)
+        };
+        for (int i = 0; i < nomes.length; i++) {
+            if (nomes[i].equalsIgnoreCase(nomeMes.trim())) {
+                return String.format("%02d", i + 1);
+            }
+        }
+        return "01";
+    }
+
     private void preencherCampos(FormacaoResponse f) {
         if (f.getInstituicao() != null)  etInstituicao.setText(f.getInstituicao());
         if (f.getCurso() != null)        etCurso.setText(f.getCurso());
-        if (f.getGrau() != null)         etGrau.setText(f.getGrau(), false);
-        if (f.getMesInicio() != null)    etInicioMes.setText(f.getMesInicio(), false);
-        if (f.getAnoInicio() != null)    etInicioAno.setText(f.getAnoInicio());
+        if (f.getNivel() != null)        etGrau.setText(f.getNivel(), false);
 
-        switchCursando.setChecked(f.isAindaCursando());
-        if (!f.isAindaCursando()) {
-            if (f.getMesConclusao() != null) etConclusaoMes.setText(f.getMesConclusao(), false);
-            if (f.getAnoConclusao() != null) etConclusaoAno.setText(f.getAnoConclusao());
+        // dataInicio vem como "MM/yyyy" → separar em mês (nome) e ano
+        if (f.getDataInicio() != null && f.getDataInicio().contains("/")) {
+            String[] partes = f.getDataInicio().split("/", 2);
+            etInicioMes.setText(numeroParaNomeMes(partes[0]), false);
+            etInicioAno.setText(partes[1]);
+        }
+
+        boolean aindaCursando = f.isAindaCursando();
+        switchCursando.setChecked(aindaCursando);
+        if (!aindaCursando && f.getDataFim() != null && f.getDataFim().contains("/")) {
+            String[] partes = f.getDataFim().split("/", 2);
+            etConclusaoMes.setText(numeroParaNomeMes(partes[0]), false);
+            etConclusaoAno.setText(partes[1]);
         }
     }
 
@@ -195,7 +239,6 @@ public class EditarFormacaoFragment extends Fragment {
             valido = false;
         }
 
-        String mesConclusao = null;
         String anoConclusao = null;
         boolean aindaCursando = switchCursando.isChecked();
 
@@ -208,21 +251,27 @@ public class EditarFormacaoFragment extends Fragment {
             } else {
                 tilConclusaoAno.setError(null);
                 anoConclusao = anoConclusaoStr;
-                mesConclusao = etConclusaoMes.getText() != null
-                        ? etConclusaoMes.getText().toString().trim() : "";
             }
         }
 
         if (!valido) return;
 
-        String grau = etGrau.getText() != null ? etGrau.getText().toString().trim() : "";
-        String mesInicio = etInicioMes.getText() != null ? etInicioMes.getText().toString().trim() : "";
+        String nivel = etGrau.getText() != null ? etGrau.getText().toString().trim() : "";
+        String mesInicioNome = etInicioMes.getText() != null ? etInicioMes.getText().toString().trim() : "";
+        String mesInicioNum = nomeParaNumeroMes(mesInicioNome);
+        String dataInicio = mesInicioNum + "/" + anoInicio;
+        String dataFim = null;
+        if (!aindaCursando && anoConclusao != null) {
+            String mesConclusaoNome = etConclusaoMes.getText() != null
+                    ? etConclusaoMes.getText().toString().trim() : "";
+            String mesConclusaoNum = nomeParaNumeroMes(mesConclusaoNome);
+            dataFim = mesConclusaoNum + "/" + anoConclusao;
+        }
 
         setLoading(true);
 
         FormacaoRequest request = new FormacaoRequest(
-                instituicao, curso, grau, mesInicio, anoInicio,
-                mesConclusao, anoConclusao, aindaCursando);
+                instituicao, curso, nivel, dataInicio, dataFim);
 
         perfilRepository.adicionarFormacao(request, new PerfilRepository.PerfilCallback() {
             @Override

@@ -6,8 +6,15 @@ import java.util.List;
 
 public class HabilidadesResponse {
 
-    @SerializedName("habilidades")
-    private List<String> habilidades;
+    @SerializedName("nome")
+    private String nome;
 
-    public List<String> getHabilidades() { return habilidades; }
+    @SerializedName("nivel")
+    private String nivel; // nullable
+
+    public String getNome()  { return nome; }
+    public String getNivel() { return nivel; }
+
+    /** Compatibilidade retroativa — retorna null (não usado pelo backend novo). */
+    public List<String> getHabilidades() { return null; }
 }

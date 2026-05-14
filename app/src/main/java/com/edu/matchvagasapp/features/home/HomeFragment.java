@@ -1,17 +1,25 @@
 package com.edu.matchvagasapp.features.home;
 
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import com.edu.matchvagasapp.MatchVagasApp;
 import com.edu.matchvagasapp.R;
+import com.edu.matchvagasapp.data.local.TokenManager;
+import com.edu.matchvagasapp.data.model.CandidaturaResponse;
+import com.edu.matchvagasapp.data.model.SugestaoVagaResponse;
 import com.edu.matchvagasapp.data.model.VagaResponse;
+import com.edu.matchvagasapp.data.repository.CandidaturaRepository;
 import com.edu.matchvagasapp.data.repository.VagaRepository;
 import com.edu.matchvagasapp.features.candidatura.ConfirmarCandidaturaFragment;
 import com.edu.matchvagasapp.features.vagas.DetalhesVagaFragment;
@@ -21,11 +29,7 @@ import java.util.List;
 public class HomeFragment extends Fragment {
 
     private final VagaRepository vagaRepository = new VagaRepository();
-
-    // IDs das vagas carregadas da API (fallback = -1 enquanto não carregado)
-    private long vagaId1 = -1;
-    private long vagaId2 = -1;
-    private long vagaId3 = -1;
+    private final CandidaturaRepository candidaturaRepository = new CandidaturaRepository();
 
     @Nullable
     @Override
@@ -39,128 +43,207 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        carregarVagas(view);
-
-        view.findViewById(R.id.card_vaga_android).setOnClickListener(v ->
-                openDetalhes(vagaId1, "Desenvolvedor Android", "TechCorp Brasil", "T",
-                        "São Paulo, SP", "CLT", "R$ 6.000 – R$ 9.000", 92));
-
-        view.findViewById(R.id.card_vaga_backend).setOnClickListener(v ->
-                openDetalhes(vagaId2, "Engenheiro Backend", "Startup XYZ", "S",
-                        "Remoto", "PJ", "R$ 8.000 – R$ 12.000", 87));
-
-        view.findViewById(R.id.card_vaga_fullstack).setOnClickListener(v ->
-                openDetalhes(vagaId3, "Desenvolvedor Full Stack", "Banco Digital", "B",
-                        "Rio de Janeiro, RJ", "CLT", "R$ 7.000 – R$ 10.000", 79));
-
-        view.findViewById(R.id.btnCandidatarAndroid).setOnClickListener(v ->
-                openConfirmar(vagaId1, "Desenvolvedor Android", "TechCorp Brasil", "T", 92));
-
-        view.findViewById(R.id.btnCandidatarBackend).setOnClickListener(v ->
-                openConfirmar(vagaId2, "Engenheiro Backend", "Startup XYZ", "S", 87));
-
-        view.findViewById(R.id.btnCandidatarFullstack).setOnClickListener(v ->
-                openConfirmar(vagaId3, "Desenvolvedor Full Stack", "Banco Digital", "B", 79));
+        preencherUsuario(view);
+        mostrarCarregandoVagas(view);
+        carregarCandidaturas();
+        carregarVagas();
     }
 
-    private void carregarVagas(View view) {
-        vagaRepository.buscarVagas(new VagaRepository.VagasCallback() {
+    // ── Usuário ───────────────────────────────────────────────────────────────
+
+    private void preencherUsuario(View view) {
+        TokenManager tm = new TokenManager(MatchVagasApp.getAppContext());
+        String nome = tm.getNome();
+        if (nome == null || nome.isEmpty()) return;
+
+        String primeiroNome = nome.split(" ")[0];
+        String inicial = String.valueOf(nome.charAt(0)).toUpperCase();
+
+        setText(view, R.id.tv_saudacao, "Olá, " + primeiroNome + "!");
+        setText(view, R.id.tv_avatar_inicial, inicial);
+    }
+
+    // ── Candidaturas (stat) ───────────────────────────────────────────────────
+
+    private void carregarCandidaturas() {
+        candidaturaRepository.minhasCandidaturas(new CandidaturaRepository.CandidaturasCallback() {
             @Override
-            public void onSuccess(List<VagaResponse> vagas) {
+            public void onSuccess(List<CandidaturaResponse> candidaturas) {
                 if (!isAdded()) return;
                 requireActivity().runOnUiThread(() -> {
-                    if (vagas.size() > 0) {
-                        VagaResponse v1 = vagas.get(0);
-                        vagaId1 = v1.getId() != null ? v1.getId() : -1;
-                        atualizarCard(view, R.id.card_vaga_android, R.id.btnCandidatarAndroid, v1);
-                    }
-                    if (vagas.size() > 1) {
-                        VagaResponse v2 = vagas.get(1);
-                        vagaId2 = v2.getId() != null ? v2.getId() : -1;
-                        atualizarCard(view, R.id.card_vaga_backend, R.id.btnCandidatarBackend, v2);
-                    }
-                    if (vagas.size() > 2) {
-                        VagaResponse v3 = vagas.get(2);
-                        vagaId3 = v3.getId() != null ? v3.getId() : -1;
-                        atualizarCard(view, R.id.card_vaga_fullstack, R.id.btnCandidatarFullstack, v3);
-                    }
-                    // Reassigna cliques com os IDs reais depois de carregar
-                    reassignarCliques(view, vagas);
+                    View root = getView();
+                    if (root == null) return;
+                    setText(root, R.id.tv_stat_candidaturas, String.valueOf(candidaturas.size()));
+                });
+            }
+
+            @Override
+            public void onError(String mensagem) { /* mantém valor padrão */ }
+        });
+    }
+
+    // ── Vagas recomendadas ────────────────────────────────────────────────────
+
+    private void mostrarCarregandoVagas(View view) {
+        LinearLayout container = view.findViewById(R.id.layout_vagas_recomendadas);
+        if (container == null) return;
+
+        TextView tvLoading = new TextView(requireContext());
+        tvLoading.setText(R.string.carregando);
+        tvLoading.setTextColor(requireContext().getColor(R.color.text_secondary));
+        tvLoading.setGravity(Gravity.CENTER);
+        tvLoading.setPadding(48, 48, 48, 48);
+        container.addView(tvLoading);
+    }
+
+    private void carregarVagas() {
+        vagaRepository.buscarSugestoes(new VagaRepository.SugestoesCallback() {
+            @Override
+            public void onSuccess(List<SugestaoVagaResponse> sugestoes) {
+                if (!isAdded()) return;
+                requireActivity().runOnUiThread(() -> {
+                    View root = getView();
+                    if (root == null) return;
+                    popularSugestoes(root, sugestoes);
                 });
             }
 
             @Override
             public void onError(String mensagem) {
-                // Falha silenciosa — os cards ficam com o conteúdo hardcoded do layout
+                // Fallback para vagas genéricas quando candidato não tem perfil ainda
+                vagaRepository.buscarVagas(new VagaRepository.VagasCallback() {
+                    @Override
+                    public void onSuccess(List<VagaResponse> vagas) {
+                        if (!isAdded()) return;
+                        requireActivity().runOnUiThread(() -> {
+                            View root = getView();
+                            if (root == null) return;
+                            popularVagasGenericas(root, vagas);
+                        });
+                    }
+
+                    @Override
+                    public void onError(String mensagemFallback) {
+                        if (!isAdded()) return;
+                        requireActivity().runOnUiThread(() -> {
+                            View root = getView();
+                            if (root == null) return;
+                            mostrarErroVagas(root, mensagemFallback);
+                        });
+                    }
+                });
             }
         });
     }
 
-    private void reassignarCliques(View view, List<VagaResponse> vagas) {
-        if (vagas.size() > 0) {
-            VagaResponse v = vagas.get(0);
-            view.findViewById(R.id.card_vaga_android).setOnClickListener(cv ->
-                    openDetalhesFromVaga(vagaId1, v));
-            view.findViewById(R.id.btnCandidatarAndroid).setOnClickListener(cv ->
-                    openConfirmarFromVaga(vagaId1, v));
+    private void popularSugestoes(View root, List<SugestaoVagaResponse> sugestoes) {
+        LinearLayout container = root.findViewById(R.id.layout_vagas_recomendadas);
+        if (container == null) return;
+
+        container.removeAllViews();
+
+        setText(root, R.id.tv_stat_matches, String.valueOf(sugestoes.size()));
+
+        if (sugestoes.isEmpty()) {
+            TextView tvVazio = new TextView(requireContext());
+            tvVazio.setText("Nenhuma sugestão disponível no momento");
+            tvVazio.setTextColor(requireContext().getColor(R.color.text_secondary));
+            tvVazio.setGravity(Gravity.CENTER);
+            tvVazio.setPadding(48, 48, 48, 48);
+            container.addView(tvVazio);
+            return;
         }
-        if (vagas.size() > 1) {
-            VagaResponse v = vagas.get(1);
-            view.findViewById(R.id.card_vaga_backend).setOnClickListener(cv ->
-                    openDetalhesFromVaga(vagaId2, v));
-            view.findViewById(R.id.btnCandidatarBackend).setOnClickListener(cv ->
-                    openConfirmarFromVaga(vagaId2, v));
-        }
-        if (vagas.size() > 2) {
-            VagaResponse v = vagas.get(2);
-            view.findViewById(R.id.card_vaga_fullstack).setOnClickListener(cv ->
-                    openDetalhesFromVaga(vagaId3, v));
-            view.findViewById(R.id.btnCandidatarFullstack).setOnClickListener(cv ->
-                    openConfirmarFromVaga(vagaId3, v));
+
+        int limite = Math.min(sugestoes.size(), 3);
+        for (int i = 0; i < limite; i++) {
+            SugestaoVagaResponse sugestao = sugestoes.get(i);
+            container.addView(criarCardVaga(sugestao.getVaga(), sugestao.getPontuacao(), container));
         }
     }
 
-    private void atualizarCard(View root, int cardId, int btnId, VagaResponse vaga) {
-        // Atualiza os listeners do botão "Candidatar" dentro do card via tag
-        View card = root.findViewById(cardId);
-        if (card == null) return;
-        card.setTag(vaga);
+    private void popularVagasGenericas(View root, List<VagaResponse> vagas) {
+        LinearLayout container = root.findViewById(R.id.layout_vagas_recomendadas);
+        if (container == null) return;
+
+        container.removeAllViews();
+
+        setText(root, R.id.tv_stat_matches, String.valueOf(vagas.size()));
+
+        if (vagas.isEmpty()) {
+            TextView tvVazio = new TextView(requireContext());
+            tvVazio.setText("Nenhuma vaga disponível no momento");
+            tvVazio.setTextColor(requireContext().getColor(R.color.text_secondary));
+            tvVazio.setGravity(Gravity.CENTER);
+            tvVazio.setPadding(48, 48, 48, 48);
+            container.addView(tvVazio);
+            return;
+        }
+
+        int limite = Math.min(vagas.size(), 3);
+        for (int i = 0; i < limite; i++) {
+            container.addView(criarCardVaga(vagas.get(i), 0, container));
+        }
     }
 
-    private void openDetalhesFromVaga(long vagaId, VagaResponse vaga) {
-        openDetalhes(vagaId,
-                vaga.getTitulo() != null ? vaga.getTitulo() : "",
-                vaga.getNomeFantasiaEmpresa() != null ? vaga.getNomeFantasiaEmpresa() : "",
-                vaga.getInicialEmpresa(),
-                vaga.getLocalFormatado(),
-                vaga.getModalidadeDescricao() != null ? vaga.getModalidadeDescricao() : "",
-                vaga.getSalarioFormatado(),
-                0);
+    private void mostrarErroVagas(View root, String mensagem) {
+        LinearLayout container = root.findViewById(R.id.layout_vagas_recomendadas);
+        if (container == null) return;
+
+        container.removeAllViews();
+
+        TextView tvErro = new TextView(requireContext());
+        tvErro.setText("Não foi possível carregar as vagas");
+        tvErro.setTextColor(requireContext().getColor(R.color.text_secondary));
+        tvErro.setGravity(Gravity.CENTER);
+        tvErro.setPadding(48, 48, 48, 48);
+        container.addView(tvErro);
     }
 
-    private void openConfirmarFromVaga(long vagaId, VagaResponse vaga) {
-        openConfirmar(vagaId,
-                vaga.getTitulo() != null ? vaga.getTitulo() : "",
-                vaga.getNomeFantasiaEmpresa() != null ? vaga.getNomeFantasiaEmpresa() : "",
-                vaga.getInicialEmpresa(),
-                0);
+    private View criarCardVaga(VagaResponse vaga, int match, LinearLayout container) {
+        View card = LayoutInflater.from(requireContext())
+                .inflate(R.layout.item_vaga, container, false);
+
+        long vagaId  = vaga.getId() != null ? vaga.getId() : -1L;
+        String titulo  = vaga.getTitulo() != null ? vaga.getTitulo() : "";
+        String empresa = vaga.getNomeFantasiaEmpresa() != null ? vaga.getNomeFantasiaEmpresa() : "";
+        String inicial = vaga.getInicialEmpresa();
+        String local   = vaga.getLocalFormatado();
+        String tipo    = vaga.getTipoVagaDescricao() != null ? vaga.getTipoVagaDescricao() : "";
+        String salario = vaga.getSalarioFormatado();
+
+        setText(card, R.id.tv_inicial, inicial);
+        setText(card, R.id.tv_titulo, titulo);
+        setText(card, R.id.tv_empresa, empresa);
+        setText(card, R.id.tv_local, local);
+        setText(card, R.id.tv_tipo, tipo);
+        setText(card, R.id.tv_salario, salario);
+
+        TextView tvMatch = card.findViewById(R.id.tv_match);
+        if (tvMatch != null) {
+            if (match > 0) {
+                tvMatch.setText(match + "% Match");
+                tvMatch.setVisibility(View.VISIBLE);
+            } else {
+                tvMatch.setVisibility(View.GONE);
+            }
+        }
+
+        card.setOnClickListener(v ->
+                navegarParaDetalhes(vagaId, titulo, empresa, inicial, local, tipo, salario, match));
+        card.findViewById(R.id.btn_detalhes).setOnClickListener(v ->
+                navegarParaDetalhes(vagaId, titulo, empresa, inicial, local, tipo, salario, match));
+        card.findViewById(R.id.btn_candidatar).setOnClickListener(v ->
+                navegarParaConfirmar(vagaId, titulo, empresa, inicial, match));
+
+        return card;
     }
 
-    private void openConfirmar(long vagaId, String titulo, String empresa, String inicial, int match) {
+    // ── Navegação ─────────────────────────────────────────────────────────────
+
+    private void navegarParaDetalhes(long vagaId, String titulo, String empresa, String inicial,
+                                     String local, String tipo, String salario, int match) {
         Bundle args = new Bundle();
-        args.putString(ConfirmarCandidaturaFragment.ARG_TITULO, titulo);
-        args.putString(ConfirmarCandidaturaFragment.ARG_EMPRESA, empresa);
-        args.putString(ConfirmarCandidaturaFragment.ARG_INICIAL, inicial);
-        args.putInt(ConfirmarCandidaturaFragment.ARG_MATCH, match);
-        args.putLong(ConfirmarCandidaturaFragment.ARG_VAGA_ID, vagaId);
-
-        Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_main)
-                .navigate(R.id.action_dashboard_to_confirmar_candidatura, args);
-    }
-
-    private void openDetalhes(long vagaId, String titulo, String empresa, String inicial,
-                               String local, String tipo, String salario, int match) {
-        Bundle args = new Bundle();
+        args.putLong(DetalhesVagaFragment.ARG_VAGA_ID, vagaId);
         args.putString(DetalhesVagaFragment.ARG_TITULO, titulo);
         args.putString(DetalhesVagaFragment.ARG_EMPRESA, empresa);
         args.putString(DetalhesVagaFragment.ARG_INICIAL, inicial);
@@ -168,9 +251,26 @@ public class HomeFragment extends Fragment {
         args.putString(DetalhesVagaFragment.ARG_TIPO, tipo);
         args.putString(DetalhesVagaFragment.ARG_SALARIO, salario);
         args.putInt(DetalhesVagaFragment.ARG_MATCH, match);
-        args.putLong(DetalhesVagaFragment.ARG_VAGA_ID, vagaId);
-
         Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_main)
                 .navigate(R.id.action_dashboard_to_detalhes, args);
+    }
+
+    private void navegarParaConfirmar(long vagaId, String titulo, String empresa, String inicial,
+                                      int match) {
+        Bundle args = new Bundle();
+        args.putLong(ConfirmarCandidaturaFragment.ARG_VAGA_ID, vagaId);
+        args.putString(ConfirmarCandidaturaFragment.ARG_TITULO, titulo);
+        args.putString(ConfirmarCandidaturaFragment.ARG_EMPRESA, empresa);
+        args.putString(ConfirmarCandidaturaFragment.ARG_INICIAL, inicial);
+        args.putInt(ConfirmarCandidaturaFragment.ARG_MATCH, match);
+        Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_main)
+                .navigate(R.id.action_dashboard_to_confirmar_candidatura, args);
+    }
+
+    // ── Util ──────────────────────────────────────────────────────────────────
+
+    private void setText(View root, int id, String text) {
+        TextView tv = root.findViewById(id);
+        if (tv != null) tv.setText(text);
     }
 }

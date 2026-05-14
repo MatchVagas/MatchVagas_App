@@ -14,6 +14,7 @@ import com.edu.matchvagasapp.data.model.HabilidadesRequest;
 import com.edu.matchvagasapp.data.model.HabilidadesResponse;
 import com.edu.matchvagasapp.data.model.LoginRequest;
 import com.edu.matchvagasapp.data.model.LoginResponse;
+import com.edu.matchvagasapp.data.model.SugestaoVagaResponse;
 import com.edu.matchvagasapp.data.model.UsuarioResponse;
 import com.edu.matchvagasapp.data.model.VagaResponse;
 
@@ -23,6 +24,7 @@ import retrofit2.Call;
 import okhttp3.ResponseBody;
 
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -44,6 +46,9 @@ public interface ApiService {
 
     // ── Vagas ─────────────────────────────────────────────────────────────────
 
+    @GET("api/candidatos/sugestoes")
+    Call<List<SugestaoVagaResponse>> buscarSugestoes();
+
     @GET("api/vagas")
     Call<List<VagaResponse>> buscarVagas(
             @Query("titulo") String titulo,
@@ -62,29 +67,52 @@ public interface ApiService {
     @GET("api/candidaturas/minhas")
     Call<List<CandidaturaResponse>> minhasCandidaturas();
 
-    // ── Perfil do candidato ───────────────────────────────────────────────────
+    // ── Candidato — dados pessoais + perfil profissional ─────────────────────
+    // Ambas as telas usam o mesmo endpoint GET/PUT /api/candidatos/meu-perfil.
+    // DadosPessoaisResponse contém todos os campos de CandidatoResponseDTO.
 
-    @GET("api/perfil/dados-pessoais")
+    @GET("api/candidatos/meu-perfil")
     Call<DadosPessoaisResponse> buscarDadosPessoais();
 
-    @PUT("api/perfil/dados-pessoais")
-    Call<Void> atualizarDadosPessoais(@Body DadosPessoaisRequest request);
+    @PUT("api/candidatos/meu-perfil")
+    Call<DadosPessoaisResponse> atualizarDadosPessoais(@Body DadosPessoaisRequest request);
 
-    @GET("api/perfil/experiencias")
+    // ── Habilidades ───────────────────────────────────────────────────────────
+
+    @GET("api/candidatos/habilidades")
+    Call<List<HabilidadesResponse>> buscarHabilidades();
+
+    @POST("api/candidatos/habilidades")
+    Call<HabilidadesResponse> adicionarHabilidade(@Body HabilidadesRequest request);
+
+    @DELETE("api/candidatos/habilidades/{nome}")
+    Call<Void> removerHabilidade(@Path("nome") String nome);
+
+    // ── Experiências ──────────────────────────────────────────────────────────
+
+    @GET("api/candidatos/experiencias")
     Call<List<ExperienciaResponse>> buscarExperiencias();
 
-    @POST("api/perfil/experiencias")
-    Call<Void> adicionarExperiencia(@Body ExperienciaRequest request);
+    @POST("api/candidatos/experiencias")
+    Call<ExperienciaResponse> adicionarExperiencia(@Body ExperienciaRequest request);
 
-    @GET("api/perfil/formacoes")
+    @PUT("api/candidatos/experiencias/{id}")
+    Call<ExperienciaResponse> atualizarExperiencia(@Path("id") Long id, @Body ExperienciaRequest request);
+
+    @DELETE("api/candidatos/experiencias/{id}")
+    Call<Void> removerExperiencia(@Path("id") Long id);
+
+    // ── Formações ─────────────────────────────────────────────────────────────
+
+    @GET("api/candidatos/formacoes")
     Call<List<FormacaoResponse>> buscarFormacoes();
 
-    @POST("api/perfil/formacoes")
-    Call<Void> adicionarFormacao(@Body FormacaoRequest request);
+    @POST("api/candidatos/formacoes")
+    Call<FormacaoResponse> adicionarFormacao(@Body FormacaoRequest request);
 
-    @GET("api/perfil/habilidades")
-    Call<HabilidadesResponse> buscarHabilidades();
+    @PUT("api/candidatos/formacoes/{id}")
+    Call<FormacaoResponse> atualizarFormacao(@Path("id") Long id, @Body FormacaoRequest request);
 
-    @PUT("api/perfil/habilidades")
-    Call<Void> atualizarHabilidades(@Body HabilidadesRequest request);
+    @DELETE("api/candidatos/formacoes/{id}")
+    Call<Void> removerFormacao(@Path("id") Long id);
 }

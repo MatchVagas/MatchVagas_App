@@ -1,5 +1,6 @@
 package com.edu.matchvagasapp.data.repository;
 
+import com.edu.matchvagasapp.data.model.CandidatoPerfilResponse;
 import com.edu.matchvagasapp.data.model.DadosPessoaisRequest;
 import com.edu.matchvagasapp.data.model.DadosPessoaisResponse;
 import com.edu.matchvagasapp.data.model.ExperienciaRequest;
@@ -54,7 +55,12 @@ public class PerfilRepository {
     }
 
     public interface HabilidadesCallback {
-        void onSucesso(HabilidadesResponse dados);
+        void onSucesso(List<HabilidadesResponse> lista);
+        void onVazio();
+    }
+
+    public interface PerfilProfissionalCallback {
+        void onSucesso(CandidatoPerfilResponse dados);
         void onVazio();
     }
 
@@ -124,10 +130,10 @@ public class PerfilRepository {
 
     public void buscarHabilidades(HabilidadesCallback callback) {
         apiService.buscarHabilidades()
-                .enqueue(new Callback<HabilidadesResponse>() {
+                .enqueue(new Callback<List<HabilidadesResponse>>() {
                     @Override
-                    public void onResponse(Call<HabilidadesResponse> call,
-                                           Response<HabilidadesResponse> response) {
+                    public void onResponse(Call<List<HabilidadesResponse>> call,
+                                           Response<List<HabilidadesResponse>> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             callback.onSucesso(response.body());
                         } else {
@@ -136,7 +142,7 @@ public class PerfilRepository {
                     }
 
                     @Override
-                    public void onFailure(Call<HabilidadesResponse> call, Throwable t) {
+                    public void onFailure(Call<List<HabilidadesResponse>> call, Throwable t) {
                         callback.onVazio();
                     }
                 });
@@ -146,9 +152,10 @@ public class PerfilRepository {
 
     public void atualizarDadosPessoais(DadosPessoaisRequest request, PerfilCallback callback) {
         apiService.atualizarDadosPessoais(request)
-                .enqueue(new Callback<Void>() {
+                .enqueue(new Callback<DadosPessoaisResponse>() {
                     @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
+                    public void onResponse(Call<DadosPessoaisResponse> call,
+                                           Response<DadosPessoaisResponse> response) {
                         if (response.isSuccessful()) {
                             callback.onSuccess();
                         } else if (response.code() == 401 || response.code() == 403) {
@@ -159,7 +166,7 @@ public class PerfilRepository {
                     }
 
                     @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
+                    public void onFailure(Call<DadosPessoaisResponse> call, Throwable t) {
                         callback.onError("Sem conexão com o servidor");
                     }
                 });
@@ -167,6 +174,50 @@ public class PerfilRepository {
 
     public void adicionarExperiencia(ExperienciaRequest request, PerfilCallback callback) {
         apiService.adicionarExperiencia(request)
+                .enqueue(new Callback<ExperienciaResponse>() {
+                    @Override
+                    public void onResponse(Call<ExperienciaResponse> call,
+                                           Response<ExperienciaResponse> response) {
+                        if (response.isSuccessful()) {
+                            callback.onSuccess();
+                        } else if (response.code() == 401 || response.code() == 403) {
+                            callback.onError("Sessão expirada. Faça login novamente.");
+                        } else {
+                            callback.onError("Erro no servidor (código " + response.code() + ")");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ExperienciaResponse> call, Throwable t) {
+                        callback.onError("Sem conexão com o servidor");
+                    }
+                });
+    }
+
+    public void atualizarExperiencia(Long id, ExperienciaRequest request, PerfilCallback callback) {
+        apiService.atualizarExperiencia(id, request)
+                .enqueue(new Callback<ExperienciaResponse>() {
+                    @Override
+                    public void onResponse(Call<ExperienciaResponse> call,
+                                           Response<ExperienciaResponse> response) {
+                        if (response.isSuccessful()) {
+                            callback.onSuccess();
+                        } else if (response.code() == 401 || response.code() == 403) {
+                            callback.onError("Sessão expirada. Faça login novamente.");
+                        } else {
+                            callback.onError("Erro no servidor (código " + response.code() + ")");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ExperienciaResponse> call, Throwable t) {
+                        callback.onError("Sem conexão com o servidor");
+                    }
+                });
+    }
+
+    public void removerExperiencia(Long id, PerfilCallback callback) {
+        apiService.removerExperiencia(id)
                 .enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
@@ -188,6 +239,50 @@ public class PerfilRepository {
 
     public void adicionarFormacao(FormacaoRequest request, PerfilCallback callback) {
         apiService.adicionarFormacao(request)
+                .enqueue(new Callback<FormacaoResponse>() {
+                    @Override
+                    public void onResponse(Call<FormacaoResponse> call,
+                                           Response<FormacaoResponse> response) {
+                        if (response.isSuccessful()) {
+                            callback.onSuccess();
+                        } else if (response.code() == 401 || response.code() == 403) {
+                            callback.onError("Sessão expirada. Faça login novamente.");
+                        } else {
+                            callback.onError("Erro no servidor (código " + response.code() + ")");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<FormacaoResponse> call, Throwable t) {
+                        callback.onError("Sem conexão com o servidor");
+                    }
+                });
+    }
+
+    public void atualizarFormacao(Long id, FormacaoRequest request, PerfilCallback callback) {
+        apiService.atualizarFormacao(id, request)
+                .enqueue(new Callback<FormacaoResponse>() {
+                    @Override
+                    public void onResponse(Call<FormacaoResponse> call,
+                                           Response<FormacaoResponse> response) {
+                        if (response.isSuccessful()) {
+                            callback.onSuccess();
+                        } else if (response.code() == 401 || response.code() == 403) {
+                            callback.onError("Sessão expirada. Faça login novamente.");
+                        } else {
+                            callback.onError("Erro no servidor (código " + response.code() + ")");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<FormacaoResponse> call, Throwable t) {
+                        callback.onError("Sem conexão com o servidor");
+                    }
+                });
+    }
+
+    public void removerFormacao(Long id, PerfilCallback callback) {
+        apiService.removerFormacao(id)
                 .enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
@@ -207,8 +302,79 @@ public class PerfilRepository {
                 });
     }
 
-    public void atualizarHabilidades(HabilidadesRequest request, PerfilCallback callback) {
-        apiService.atualizarHabilidades(request)
+    // buscarPerfilProfissional reutiliza buscarDadosPessoais — mesmo endpoint
+    public void buscarPerfilProfissional(PerfilProfissionalCallback callback) {
+        apiService.buscarDadosPessoais()
+                .enqueue(new Callback<DadosPessoaisResponse>() {
+                    @Override
+                    public void onResponse(Call<DadosPessoaisResponse> call,
+                                           Response<DadosPessoaisResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            DadosPessoaisResponse d = response.body();
+                            CandidatoPerfilResponse perfil = new CandidatoPerfilResponse(
+                                    d.getCpf(),
+                                    d.getObjetivoProfissional(),
+                                    d.getDisponibilidade(),
+                                    d.getPretensaoSalarial());
+                            callback.onSucesso(perfil);
+                        } else {
+                            callback.onVazio();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<DadosPessoaisResponse> call, Throwable t) {
+                        callback.onVazio();
+                    }
+                });
+    }
+
+    public void atualizarPerfilProfissional(DadosPessoaisRequest request, PerfilCallback callback) {
+        apiService.atualizarDadosPessoais(request)
+                .enqueue(new Callback<DadosPessoaisResponse>() {
+                    @Override
+                    public void onResponse(Call<DadosPessoaisResponse> call,
+                                           Response<DadosPessoaisResponse> response) {
+                        if (response.isSuccessful()) {
+                            callback.onSuccess();
+                        } else if (response.code() == 401 || response.code() == 403) {
+                            callback.onError("Sessão expirada. Faça login novamente.");
+                        } else {
+                            callback.onError("Erro no servidor (código " + response.code() + ")");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<DadosPessoaisResponse> call, Throwable t) {
+                        callback.onError("Sem conexão com o servidor");
+                    }
+                });
+    }
+
+    public void adicionarHabilidade(HabilidadesRequest request, PerfilCallback callback) {
+        apiService.adicionarHabilidade(request)
+                .enqueue(new Callback<HabilidadesResponse>() {
+                    @Override
+                    public void onResponse(Call<HabilidadesResponse> call,
+                                           Response<HabilidadesResponse> response) {
+                        if (response.isSuccessful()) {
+                            callback.onSuccess();
+                        } else if (response.code() == 401 || response.code() == 403) {
+                            callback.onError("Sessão expirada. Faça login novamente.");
+                        } else {
+                            callback.onError("Erro no servidor (código " + response.code() + ")");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<HabilidadesResponse> call, Throwable t) {
+                        callback.onError("Sem conexão com o servidor");
+                    }
+                });
+    }
+
+    public void removerHabilidade(String nome, PerfilCallback callback) {
+        apiService.removerHabilidade(nome)
                 .enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {

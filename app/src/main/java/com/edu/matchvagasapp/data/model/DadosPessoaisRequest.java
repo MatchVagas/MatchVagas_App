@@ -2,55 +2,110 @@ package com.edu.matchvagasapp.data.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.math.BigDecimal;
+
+/**
+ * Mapeia para CandidatoRequestDTO do backend (PUT /api/candidatos/meu-perfil).
+ * Campos genero, linkedin e portfolio não existem no backend e foram omitidos.
+ */
 public class DadosPessoaisRequest {
-
-    @SerializedName("nome")
-    private final String nome;
-
-    @SerializedName("email")
-    private final String email;
-
-    @SerializedName("telefone")
-    private final String telefone;
-
-    @SerializedName("dataNascimento")
-    private final String dataNascimento;
 
     @SerializedName("cpf")
     private final String cpf;
 
-    @SerializedName("genero")
-    private final String genero;
+    @SerializedName("nomeCompleto")
+    private final String nomeCompleto;
 
-    @SerializedName("cep")
-    private final String cep;
+    @SerializedName("email")
+    private final String email;
 
-    @SerializedName("cidade")
-    private final String cidade;
+    /** Formato ISO: yyyy-MM-dd */
+    @SerializedName("dataNascimento")
+    private final String dataNascimento;
 
-    @SerializedName("estado")
-    private final String estado;
+    /** Mapeado para resumoProfissional no backend */
+    @SerializedName("resumoProfissional")
+    private final String resumoProfissional;
 
-    @SerializedName("linkedin")
-    private final String linkedin;
+    @SerializedName("disponibilidade")
+    private final String disponibilidade;
 
-    @SerializedName("portfolio")
-    private final String portfolio;
+    @SerializedName("pretensaoSalarial")
+    private final BigDecimal pretensaoSalarial;
 
-    public DadosPessoaisRequest(String nome, String email, String telefone,
-                                String dataNascimento, String cpf, String genero,
-                                String cep, String cidade, String estado,
-                                String linkedin, String portfolio) {
-        this.nome = nome;
-        this.email = email;
-        this.telefone = telefone;
-        this.dataNascimento = dataNascimento;
+    /** null → backend não altera o telefone existente */
+    @SerializedName("telefone")
+    private final TelefoneRequest telefone;
+
+    /** null → backend não altera o endereço existente */
+    @SerializedName("localizacao")
+    private final LocalizacaoRequest localizacao;
+
+    public DadosPessoaisRequest(String cpf, String nomeCompleto, String email,
+                                String dataNascimento, String resumoProfissional,
+                                String disponibilidade, BigDecimal pretensaoSalarial,
+                                TelefoneRequest telefone, LocalizacaoRequest localizacao) {
         this.cpf = cpf;
-        this.genero = genero;
-        this.cep = cep;
-        this.cidade = cidade;
-        this.estado = estado;
-        this.linkedin = linkedin;
-        this.portfolio = portfolio;
+        this.nomeCompleto = nomeCompleto;
+        this.email = email;
+        this.dataNascimento = dataNascimento;
+        this.resumoProfissional = resumoProfissional;
+        this.disponibilidade = disponibilidade;
+        this.pretensaoSalarial = pretensaoSalarial;
+        this.telefone = telefone;
+        this.localizacao = localizacao;
+    }
+
+    // ── Nested ───────────────────────────────────────────────────────────────
+
+    public static class TelefoneRequest {
+        @SerializedName("numero")
+        private final String numero;
+
+        @SerializedName("tipoTelefoneId")
+        private final long tipoTelefoneId;
+
+        @SerializedName("wpp")
+        private final boolean wpp;
+
+        public TelefoneRequest(String numero, long tipoTelefoneId, boolean wpp) {
+            this.numero = numero;
+            this.tipoTelefoneId = tipoTelefoneId;
+            this.wpp = wpp;
+        }
+    }
+
+    public static class LocalizacaoRequest {
+        @SerializedName("logradouro")
+        private final String logradouro;
+
+        @SerializedName("numero")
+        private final String numero;
+
+        @SerializedName("complemento")
+        private final String complemento;
+
+        @SerializedName("bairro")
+        private final String bairro;
+
+        @SerializedName("cep")
+        private final String cep;
+
+        @SerializedName("cidade")
+        private final String cidade;
+
+        @SerializedName("estado")
+        private final String estado;
+
+        public LocalizacaoRequest(String logradouro, String numero, String complemento,
+                                  String bairro, String cep, String cidade, String estado) {
+            this.logradouro = logradouro;
+            this.numero = numero;
+            this.complemento = complemento;
+            this.bairro = bairro;
+            this.cep = cep;
+            this.cidade = cidade;
+            this.estado = estado;
+        }
     }
 }

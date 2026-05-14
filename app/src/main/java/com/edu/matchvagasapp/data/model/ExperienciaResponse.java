@@ -4,27 +4,22 @@ import com.google.gson.annotations.SerializedName;
 
 public class ExperienciaResponse {
 
-    @SerializedName("id")           private Long id;
-    @SerializedName("cargo")        private String cargo;
-    @SerializedName("empresa")      private String empresa;
-    @SerializedName("modalidade")   private String modalidade;
-    @SerializedName("vinculo")      private String vinculo;
-    @SerializedName("cidade")       private String cidade;
-    @SerializedName("mesInicio")    private String mesInicio;
-    @SerializedName("anoInicio")    private String anoInicio;
-    @SerializedName("mesSaida")     private String mesSaida;
-    @SerializedName("anoSaida")     private String anoSaida;
-    @SerializedName("empregoAtual") private boolean empregoAtual;
+    @SerializedName("id")          private Long id;
+    @SerializedName("candidatoId") private Long candidatoId;
+    @SerializedName("empresa")     private String empresa;
+    @SerializedName("cargo")       private String cargo;
+    @SerializedName("descricao")   private String descricao;
+    @SerializedName("dataInicio")  private String dataInicio; // "MM/yyyy"
+    @SerializedName("dataFim")     private String dataFim;    // null ou "MM/yyyy"
 
     public Long getId()             { return id; }
-    public String getCargo()        { return cargo; }
+    public Long getCandidatoId()    { return candidatoId; }
     public String getEmpresa()      { return empresa; }
-    public String getModalidade()   { return modalidade; }
-    public String getVinculo()      { return vinculo; }
-    public String getCidade()       { return cidade; }
-    public String getMesInicio()    { return mesInicio; }
-    public String getAnoInicio()    { return anoInicio; }
-    public String getMesSaida()     { return mesSaida; }
-    public String getAnoSaida()     { return anoSaida; }
-    public boolean isEmpregoAtual() { return empregoAtual; }
+    public String getCargo()        { return cargo; }
+    public String getDescricao()    { return descricao; }
+    public String getDataInicio()   { return dataInicio; }
+    public String getDataFim()      { return dataFim; }
+
+    /** Retorna true se dataFim for null ou vazio (emprego atual). */
+    public boolean isEmpregoAtual() { return dataFim == null || dataFim.isEmpty(); }
 }

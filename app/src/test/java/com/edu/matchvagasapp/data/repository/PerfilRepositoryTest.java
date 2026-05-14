@@ -175,22 +175,22 @@ public class PerfilRepositoryTest {
     // ── buscarHabilidades ─────────────────────────────────────────────────────
 
     @Test
-    public void buscarHabilidades_respostaComSucesso_chamaOnSucesso() {
-        Call<HabilidadesResponse> mockCall = mockCall();
+    public void buscarHabilidades_respostaComLista_chamaOnSucesso() {
+        Call<List<HabilidadesResponse>> mockCall = mockCall();
         when(apiService.buscarHabilidades()).thenReturn(mockCall);
 
         repository.buscarHabilidades(habilidadesCallback);
 
-        Callback<HabilidadesResponse> cb = captureCallback(mockCall);
-        HabilidadesResponse body = mock(HabilidadesResponse.class);
-        cb.onResponse(mockCall, Response.success(body));
+        Callback<List<HabilidadesResponse>> cb = captureCallback(mockCall);
+        List<HabilidadesResponse> lista = Arrays.asList(mock(HabilidadesResponse.class));
+        cb.onResponse(mockCall, Response.success(lista));
 
-        verify(habilidadesCallback).onSucesso(body);
+        verify(habilidadesCallback).onSucesso(lista);
     }
 
     @Test
     public void buscarHabilidades_respostaErro_chamaOnVazio() {
-        Call<HabilidadesResponse> mockCall = mockCall();
+        Call<List<HabilidadesResponse>> mockCall = mockCall();
         when(apiService.buscarHabilidades()).thenReturn(mockCall);
 
         repository.buscarHabilidades(habilidadesCallback);
@@ -202,7 +202,7 @@ public class PerfilRepositoryTest {
 
     @Test
     public void buscarHabilidades_falhaDeRede_chamaOnVazio() {
-        Call<HabilidadesResponse> mockCall = mockCall();
+        Call<List<HabilidadesResponse>> mockCall = mockCall();
         when(apiService.buscarHabilidades()).thenReturn(mockCall);
 
         repository.buscarHabilidades(habilidadesCallback);
@@ -338,26 +338,26 @@ public class PerfilRepositoryTest {
         verify(perfilCallback).onError("Sem conexão com o servidor");
     }
 
-    // ── atualizarHabilidades ──────────────────────────────────────────────────
+    // ── adicionarHabilidade ───────────────────────────────────────────────────
 
     @Test
-    public void atualizarHabilidades_respostaComSucesso_chamaOnSuccess() {
-        Call<Void> mockCall = mockCall();
-        when(apiService.atualizarHabilidades(any())).thenReturn(mockCall);
+    public void adicionarHabilidade_respostaComSucesso_chamaOnSuccess() {
+        Call<HabilidadesResponse> mockCall = mockCall();
+        when(apiService.adicionarHabilidade(any())).thenReturn(mockCall);
 
-        repository.atualizarHabilidades(new HabilidadesRequest(Arrays.asList("Java", "Android")), perfilCallback);
+        repository.adicionarHabilidade(new HabilidadesRequest("Java", null), perfilCallback);
 
-        captureCallback(mockCall).onResponse(mockCall, Response.success(null));
+        captureCallback(mockCall).onResponse(mockCall, Response.success(mock(HabilidadesResponse.class)));
 
         verify(perfilCallback).onSuccess();
     }
 
     @Test
-    public void atualizarHabilidades_resposta401_chamaOnErrorSessaoExpirada() {
-        Call<Void> mockCall = mockCall();
-        when(apiService.atualizarHabilidades(any())).thenReturn(mockCall);
+    public void adicionarHabilidade_resposta401_chamaOnErrorSessaoExpirada() {
+        Call<HabilidadesResponse> mockCall = mockCall();
+        when(apiService.adicionarHabilidade(any())).thenReturn(mockCall);
 
-        repository.atualizarHabilidades(new HabilidadesRequest(Arrays.asList("Java")), perfilCallback);
+        repository.adicionarHabilidade(new HabilidadesRequest("Java", null), perfilCallback);
 
         captureCallback(mockCall).onResponse(mockCall, Response.error(401, errorBody));
 
@@ -365,11 +365,49 @@ public class PerfilRepositoryTest {
     }
 
     @Test
-    public void atualizarHabilidades_falhaDeRede_chamaOnErrorSemConexao() {
-        Call<Void> mockCall = mockCall();
-        when(apiService.atualizarHabilidades(any())).thenReturn(mockCall);
+    public void adicionarHabilidade_falhaDeRede_chamaOnErrorSemConexao() {
+        Call<HabilidadesResponse> mockCall = mockCall();
+        when(apiService.adicionarHabilidade(any())).thenReturn(mockCall);
 
-        repository.atualizarHabilidades(new HabilidadesRequest(Arrays.asList("Java")), perfilCallback);
+        repository.adicionarHabilidade(new HabilidadesRequest("Java", null), perfilCallback);
+
+        captureCallback(mockCall).onFailure(mockCall, new IOException());
+
+        verify(perfilCallback).onError("Sem conexão com o servidor");
+    }
+
+    // ── removerHabilidade ─────────────────────────────────────────────────────
+
+    @Test
+    public void removerHabilidade_respostaComSucesso_chamaOnSuccess() {
+        Call<Void> mockCall = mockCall();
+        when(apiService.removerHabilidade("Java")).thenReturn(mockCall);
+
+        repository.removerHabilidade("Java", perfilCallback);
+
+        captureCallback(mockCall).onResponse(mockCall, Response.success(null));
+
+        verify(perfilCallback).onSuccess();
+    }
+
+    @Test
+    public void removerHabilidade_resposta403_chamaOnErrorSessaoExpirada() {
+        Call<Void> mockCall = mockCall();
+        when(apiService.removerHabilidade("Java")).thenReturn(mockCall);
+
+        repository.removerHabilidade("Java", perfilCallback);
+
+        captureCallback(mockCall).onResponse(mockCall, Response.error(403, errorBody));
+
+        verify(perfilCallback).onError("Sessão expirada. Faça login novamente.");
+    }
+
+    @Test
+    public void removerHabilidade_falhaDeRede_chamaOnErrorSemConexao() {
+        Call<Void> mockCall = mockCall();
+        when(apiService.removerHabilidade("Java")).thenReturn(mockCall);
+
+        repository.removerHabilidade("Java", perfilCallback);
 
         captureCallback(mockCall).onFailure(mockCall, new IOException());
 

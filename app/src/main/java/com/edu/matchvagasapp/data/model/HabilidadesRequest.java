@@ -2,14 +2,16 @@ package com.edu.matchvagasapp.data.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 public class HabilidadesRequest {
 
-    @SerializedName("habilidades")
-    private final List<String> habilidades;
+    @SerializedName("nome")
+    private final String nome;
 
-    public HabilidadesRequest(List<String> habilidades) {
-        this.habilidades = habilidades;
+    @SerializedName("nivel")
+    private final String nivel; // nullable
+
+    public HabilidadesRequest(String nome, String nivel) {
+        this.nome  = nome;
+        this.nivel = nivel;
     }
 }
