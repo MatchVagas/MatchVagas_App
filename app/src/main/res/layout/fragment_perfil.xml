@@ -29,6 +29,7 @@
                 android:backgroundTint="#FFFFFF"
                 android:contentDescription="@string/avatar_desc"
                 android:gravity="center"
+                android:id="@+id/tv_avatar_inicial"
                 android:text="J"
                 android:textColor="@color/primary_header"
                 android:textSize="34sp"
@@ -38,6 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
+                android:id="@+id/tv_perfil_nome"
                 android:text="@string/perfil_nome"
                 android:textColor="@color/white"
                 android:textSize="20sp"
@@ -47,6 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:id="@+id/tv_perfil_cargo"
                 android:text="@string/perfil_cargo"
                 android:textColor="#CCffffff"
                 android:textSize="14sp" />
@@ -56,6 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
                 android:layout_marginTop="16dp"
+                android:id="@+id/btn_editar_perfil"
                 android:text="@string/editar_perfil"
                 android:textColor="@color/white"
                 android:textSize="13sp"
@@ -96,6 +100,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:id="@+id/tv_perfil_progresso_pct"
                         android:text="65%"
                         android:textColor="@color/primary"
                         android:textSize="15sp"
@@ -107,6 +112,7 @@
                     android:layout_height="8dp"
                     android:layout_marginTop="10dp"
                     android:max="100"
+                    android:id="@+id/progressbar_perfil"
                     android:progress="65"
                     android:progressDrawable="@null"
                     style="?android:attr/progressBarStyleHorizontal"
@@ -188,6 +194,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:id="@+id/tv_dados_sub"
                             android:text="@string/dados_pessoais_sub"
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
@@ -201,6 +208,7 @@
                         android:paddingEnd="8dp"
                         android:paddingTop="3dp"
                         android:paddingBottom="3dp"
+                        android:id="@+id/tv_dados_status"
                         android:text="@string/secao_completa"
                         android:textColor="@color/status_entrevista_text"
                         android:textSize="11sp"
@@ -252,6 +260,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:id="@+id/tv_formacao_sub"
                             android:text="@string/formacao_sub"
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
@@ -265,6 +274,7 @@
                         android:paddingEnd="8dp"
                         android:paddingTop="3dp"
                         android:paddingBottom="3dp"
+                        android:id="@+id/tv_formacao_status"
                         android:text="@string/secao_completa"
                         android:textColor="@color/status_entrevista_text"
                         android:textSize="11sp"
@@ -316,6 +326,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:id="@+id/tv_experiencia_sub"
                             android:text="@string/experiencia_sub"
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
@@ -329,7 +340,74 @@
                         android:paddingEnd="8dp"
                         android:paddingTop="3dp"
                         android:paddingBottom="3dp"
+                        android:id="@+id/tv_experiencia_status"
                         android:text="@string/secao_em_progresso"
+                        android:textColor="@color/status_analise_text"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider" />
+
+                <!-- Perfil Profissional -->
+                <LinearLayout
+                    android:id="@+id/item_perfil_profissional"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_section_item"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/bg_avatar"
+                        android:backgroundTint="#2196F3"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_pesquisar"
+                        android:tint="@color/white"
+                        android:contentDescription="@null" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="14dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/perfil_profissional"
+                            android:textColor="@color/text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/tv_objetivo_sub"
+                            android:text="@string/perfil_profissional_sub"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_status_analise"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"
+                        android:id="@+id/tv_objetivo_status"
+                        android:text="@string/secao_incompleta"
                         android:textColor="@color/status_analise_text"
                         android:textSize="11sp"
                         android:textStyle="bold" />
@@ -380,6 +458,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:id="@+id/tv_habilidades_sub"
                             android:text="@string/habilidades_sub"
                             android:textColor="@color/text_hint"
                             android:textSize="12sp" />
@@ -393,6 +472,7 @@
                         android:paddingEnd="8dp"
                         android:paddingTop="3dp"
                         android:paddingBottom="3dp"
+                        android:id="@+id/tv_habilidades_status"
                         android:text="@string/secao_incompleta"
                         android:textColor="@color/status_salvo_text"
                         android:textSize="11sp"
@@ -409,6 +489,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="24dp"
+            android:id="@+id/btn_sair"
             android:text="@string/sair"
             android:textColor="@color/error"
             android:textSize="15sp"

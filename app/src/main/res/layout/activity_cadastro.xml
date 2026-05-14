@@ -99,7 +99,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Conta"
+                android:text="Dados"
                 android:textColor="@color/accent"
                 android:textSize="11sp"
                 android:gravity="center"/>
@@ -109,7 +109,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Perfil"
+                android:text="Endereço"
                 android:textColor="@color/step_inactive"
                 android:textSize="11sp"
                 android:gravity="center"/>
@@ -119,7 +119,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Localização"
+                android:text="Contato"
                 android:textColor="@color/step_inactive"
                 android:textSize="11sp"
                 android:gravity="center"/>
@@ -135,7 +135,7 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <!-- ===== ETAPA 1: Dados da Conta ===== -->
+        <!-- ===== ETAPA 1: Dados Pessoais ===== -->
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -150,7 +150,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Dados da conta"
+                    android:text="Dados Pessoais"
                     android:textSize="22sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
@@ -159,7 +159,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Preencha seus dados para criar o acesso"
+                    android:text="Preencha seus dados para criar a conta"
                     android:textSize="14sp"
                     android:textColor="@color/text_secondary"
                     android:layout_marginBottom="20dp"/>
@@ -177,39 +177,6 @@
                         android:orientation="vertical"
                         android:padding="16dp">
 
-                        <!-- Tipo de conta -->
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Tipo de conta"
-                            android:textSize="13sp"
-                            android:textColor="@color/text_secondary"
-                            android:layout_marginBottom="8dp"/>
-
-                        <com.google.android.material.chip.ChipGroup
-                            android:id="@+id/chip_group_tipo_usuario"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            app:singleSelection="true"
-                            app:selectionRequired="false"
-                            android:layout_marginBottom="16dp">
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chip_candidato"
-                                style="@style/Widget.Material3.Chip.Filter"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Candidato"/>
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chip_empresa"
-                                style="@style/Widget.Material3.Chip.Filter"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Empresa"/>
-
-                        </com.google.android.material.chip.ChipGroup>
-
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_nome"
                             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
@@ -224,6 +191,24 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="textPersonName|textCapWords"
+                                android:imeOptions="actionNext"/>
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_cpf"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="CPF"
+                            app:helperText="Formato: 000.000.000-00"
+                            android:layout_marginBottom="12dp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_cpf"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="number"
                                 android:imeOptions="actionNext"/>
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -284,7 +269,6 @@
 
                         </com.google.android.material.textfield.TextInputLayout>
 
-                        <!-- Data de nascimento -->
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_data_nascimento"
                             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
@@ -365,7 +349,7 @@
 
         </ScrollView>
 
-        <!-- ===== ETAPA 2: Perfil Profissional ===== -->
+        <!-- ===== ETAPA 2: Endereço ===== -->
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -380,168 +364,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Perfil Profissional"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginBottom="4dp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Conte-nos sobre sua experiência"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_secondary"
-                    android:layout_marginBottom="20dp"/>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="@color/surface">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <!-- Área de atuação -->
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/til_area"
-                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Área de atuação"
-                            android:layout_marginBottom="20dp">
-
-                            <AutoCompleteTextView
-                                android:id="@+id/et_area"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:inputType="none"
-                                android:focusable="true"/>
-
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <!-- Nível de experiência -->
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Nível de experiência"
-                            android:textSize="13sp"
-                            android:textColor="@color/text_secondary"
-                            android:layout_marginBottom="8dp"/>
-
-                        <com.google.android.material.chip.ChipGroup
-                            android:id="@+id/chip_group_nivel"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            app:singleSelection="true"
-                            app:selectionRequired="false"
-                            android:layout_marginBottom="20dp">
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chip_estagio"
-                                style="@style/Widget.Material3.Chip.Filter"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Estágio"/>
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chip_junior"
-                                style="@style/Widget.Material3.Chip.Filter"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Júnior"/>
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chip_pleno"
-                                style="@style/Widget.Material3.Chip.Filter"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Pleno"/>
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chip_senior"
-                                style="@style/Widget.Material3.Chip.Filter"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Sênior"/>
-
-                        </com.google.android.material.chip.ChipGroup>
-
-                        <!-- Tipo de contrato preferido -->
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Tipo de contrato preferido"
-                            android:textSize="13sp"
-                            android:textColor="@color/text_secondary"
-                            android:layout_marginBottom="8dp"/>
-
-                        <com.google.android.material.chip.ChipGroup
-                            android:id="@+id/chip_group_contrato"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            app:singleSelection="false"
-                            android:layout_marginBottom="8dp">
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chip_clt"
-                                style="@style/Widget.Material3.Chip.Filter"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="CLT"/>
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chip_pj"
-                                style="@style/Widget.Material3.Chip.Filter"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="PJ"/>
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chip_estagio_contrato"
-                                style="@style/Widget.Material3.Chip.Filter"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Estágio"/>
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chip_freelance"
-                                style="@style/Widget.Material3.Chip.Filter"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Freelance"/>
-
-                        </com.google.android.material.chip.ChipGroup>
-
-                    </LinearLayout>
-
-                </com.google.android.material.card.MaterialCardView>
-
-            </LinearLayout>
-
-        </ScrollView>
-
-        <!-- ===== ETAPA 3: Localização ===== -->
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Localização"
+                    android:text="Endereço"
                     android:textSize="22sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
@@ -568,7 +391,102 @@
                         android:orientation="vertical"
                         android:padding="16dp">
 
-                        <!-- Cidade -->
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_cep"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="CEP"
+                            app:helperText="Formato: 00000-000"
+                            android:layout_marginBottom="12dp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_cep"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="number"
+                                android:imeOptions="actionNext"/>
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_logradouro"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Logradouro"
+                            android:layout_marginBottom="12dp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_logradouro"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="textCapWords"
+                                android:imeOptions="actionNext"/>
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <!-- Número e Complemento em linha -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="12dp">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/til_numero_end"
+                                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:hint="Número"
+                                android:layout_marginEnd="8dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/et_numero_end"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="textCapCharacters"
+                                    android:imeOptions="actionNext"/>
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/til_complemento"
+                                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="2"
+                                android:hint="Complemento (opcional)">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/et_complemento"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="textCapWords"
+                                    android:imeOptions="actionNext"/>
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                        </LinearLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_bairro"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Bairro"
+                            android:layout_marginBottom="12dp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_bairro"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="textCapWords"
+                                android:imeOptions="actionNext"/>
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_cidade"
                             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
@@ -586,14 +504,12 @@
 
                         </com.google.android.material.textfield.TextInputLayout>
 
-                        <!-- Estado -->
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_estado"
                             style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Estado"
-                            android:layout_marginBottom="20dp">
+                            android:hint="Estado (UF)">
 
                             <AutoCompleteTextView
                                 android:id="@+id/et_estado"
@@ -603,52 +519,80 @@
 
                         </com.google.android.material.textfield.TextInputLayout>
 
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <!-- ===== ETAPA 3: Contato ===== -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Contato"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="4dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Como podemos entrar em contato com você?"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="20dp"/>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/surface">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_telefone"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Telefone (opcional)"
+                            app:helperText="Formato: (00) 00000-0000"
+                            android:layout_marginBottom="16dp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_telefone"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="phone"
+                                android:imeOptions="actionDone"/>
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:background="@color/divider"
                             android:layout_marginBottom="16dp"/>
 
-                        <!-- Switch: Trabalho remoto -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginBottom="16dp">
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Trabalho remoto"
-                                    android:textSize="15sp"
-                                    android:textColor="@color/text_primary"
-                                    android:fontFamily="sans-serif-medium"/>
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Aceito vagas 100% remotas"
-                                    android:textSize="12sp"
-                                    android:textColor="@color/text_secondary"/>
-
-                            </LinearLayout>
-
-                            <com.google.android.material.materialswitch.MaterialSwitch
-                                android:id="@+id/switch_remoto"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:checked="true"/>
-
-                        </LinearLayout>
-
-                        <!-- Switch: Disponível para relocação -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -664,7 +608,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Disponível para relocação"
+                                    android:text="Este número é WhatsApp"
                                     android:textSize="15sp"
                                     android:textColor="@color/text_primary"
                                     android:fontFamily="sans-serif-medium"/>
@@ -672,14 +616,14 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Posso me mudar para outra cidade"
+                                    android:text="Receba contatos de empresas pelo WhatsApp"
                                     android:textSize="12sp"
                                     android:textColor="@color/text_secondary"/>
 
                             </LinearLayout>
 
                             <com.google.android.material.materialswitch.MaterialSwitch
-                                android:id="@+id/switch_relocacao"
+                                android:id="@+id/switch_whatsapp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:checked="false"/>
@@ -689,6 +633,15 @@
                     </LinearLayout>
 
                 </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Você pode adicionar ou alterar informações de contato depois, no seu perfil."
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginTop="12dp"
+                    android:gravity="center"/>
 
             </LinearLayout>
 

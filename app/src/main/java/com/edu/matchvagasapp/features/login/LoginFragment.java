@@ -15,6 +15,9 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.edu.matchvagasapp.R;
+import com.edu.matchvagasapp.data.local.TokenManager;
+import com.edu.matchvagasapp.data.model.LoginResponse;
+import com.edu.matchvagasapp.data.repository.AuthRepository;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -23,6 +26,8 @@ public class LoginFragment extends Fragment {
 
     private TextInputLayout tilEmail, tilPassword;
     private TextInputEditText etEmail, etPassword;
+    private MaterialButton btnLogin;
+    private final AuthRepository authRepository = new AuthRepository();
 
     @Nullable
     @Override
@@ -40,7 +45,7 @@ public class LoginFragment extends Fragment {
         tilPassword = view.findViewById(R.id.til_password);
         etEmail = view.findViewById(R.id.et_email);
         etPassword = view.findViewById(R.id.et_password);
-        MaterialButton btnLogin = view.findViewById(R.id.btn_login);
+        btnLogin = view.findViewById(R.id.btn_login);
         TextView tvForgotPassword = view.findViewById(R.id.tv_forgot_password);
         TextView tvRegister = view.findViewById(R.id.tv_register);
 
@@ -60,7 +65,7 @@ public class LoginFragment extends Fragment {
         tilPassword.setError(null);
 
         String email = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
-        String password = etPassword.getText() != null ? etPassword.getText().toString() : "";
+        String senha = etPassword.getText() != null ? etPassword.getText().toString() : "";
 
         boolean valid = true;
 
@@ -72,17 +77,48 @@ public class LoginFragment extends Fragment {
             valid = false;
         }
 
-        if (TextUtils.isEmpty(password)) {
+        if (TextUtils.isEmpty(senha)) {
             tilPassword.setError("Informe a senha");
             valid = false;
-        } else if (password.length() < 6) {
+        } else if (senha.length() < 6) {
             tilPassword.setError("A senha deve ter pelo menos 6 caracteres");
             valid = false;
         }
 
         if (!valid) return;
 
-        // TODO: integrar com backend de autenticação
-        NavHostFragment.findNavController(this).navigate(R.id.action_login_to_dashboard);
+        setLoading(true);
+
+        authRepository.login(email, senha, new AuthRepository.LoginCallback() {
+            @Override
+            public void onSuccess(LoginResponse response) {
+                if (!isAdded()) return;
+                requireActivity().runOnUiThread(() -> {
+                    setLoading(false);
+                    new TokenManager(requireContext()).salvar(
+                            response.getToken(),
+                            response.getUsuarioId(),
+                            response.getNome(),
+                            response.getPerfil()
+                    );
+                    NavHostFragment.findNavController(LoginFragment.this)
+                            .navigate(R.id.action_login_to_dashboard);
+                });
+            }
+
+            @Override
+            public void onError(String mensagem) {
+                if (!isAdded()) return;
+                requireActivity().runOnUiThread(() -> {
+                    setLoading(false);
+                    Toast.makeText(requireContext(), mensagem, Toast.LENGTH_LONG).show();
+                });
+            }
+        });
+    }
+
+    private void setLoading(boolean loading) {
+        btnLogin.setEnabled(!loading);
+        btnLogin.setText(loading ? "Entrando..." : "Entrar");
     }
 }

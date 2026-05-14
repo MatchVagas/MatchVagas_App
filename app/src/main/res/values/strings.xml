@@ -70,6 +70,20 @@
     <string name="secao_em_progresso">Em progresso</string>
     <string name="avatar_desc">Foto de perfil</string>
 
+    <!-- Editar Perfil Profissional -->
+    <string name="perfil_profissional">Perfil Profissional</string>
+    <string name="perfil_profissional_sub">Objetivo, disponibilidade e pretensão</string>
+    <string name="hint_objetivo_profissional">Objetivo profissional</string>
+    <string name="hint_disponibilidade">Disponibilidade</string>
+    <string name="hint_pretensao_salarial">Pretensão salarial (R$)</string>
+    <string name="disponibilidade_imediata">Imediata</string>
+    <string name="disponibilidade_2_semanas">2 semanas</string>
+    <string name="disponibilidade_1_mes">1 mês</string>
+    <string name="disponibilidade_a_combinar">A combinar</string>
+    <string name="sucesso_perfil_profissional_salvo">Perfil profissional salvo!</string>
+    <string name="erro_objetivo_vazio">Informe seu objetivo profissional</string>
+    <string name="objetivo_hint">Ex: Desenvolvedor Android pleno buscando oportunidades…</string>
+
     <!-- Detalhes Vagas -->
     <string name="job_image_desc">Imagem da vaga</string>
     <string name="favorite">Favoritar vaga</string>
@@ -121,6 +135,10 @@
     <string name="hint_data_nascimento">Data de nascimento</string>
     <string name="hint_cpf">CPF</string>
     <string name="hint_genero">Gênero</string>
+    <string name="hint_logradouro">Logradouro (rua, av…)</string>
+    <string name="hint_numero_end">Número</string>
+    <string name="hint_complemento">Complemento (opcional)</string>
+    <string name="hint_bairro">Bairro</string>
     <string name="hint_cep">CEP</string>
     <string name="hint_cidade">Cidade</string>
     <string name="hint_estado">Estado</string>
@@ -219,6 +237,8 @@
     <string name="erro_habilidade_limite">Limite de 20 habilidades atingido</string>
     <string name="erro_habilidades_minimo">Adicione pelo menos uma habilidade</string>
     <string name="sucesso_habilidades_salvas">Habilidades salvas com sucesso!</string>
+    <string name="salvando">Salvando…</string>
+    <string name="carregando">Carregando…</string>
 
     <!-- Cadastro de Currículo (upload) -->
     <string name="cadastro_curriculo_titulo">Cadastro de Currículo</string>

@@ -18,6 +18,9 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.edu.matchvagasapp.R;
+import com.edu.matchvagasapp.data.model.HabilidadesRequest;
+import com.edu.matchvagasapp.data.model.HabilidadesResponse;
+import com.edu.matchvagasapp.data.repository.PerfilRepository;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -53,8 +56,11 @@ public class EditarHabilidadesFragment extends Fragment {
     private ChipGroup chipGroupSugestoesTecnicas;
     private ChipGroup chipGroupSugestoesComportamentais;
     private View layoutVazio;
+    private MaterialButton btnSalvar;
 
+    /** Nomes normalizados (lowercase) das habilidades atualmente exibidas em chips. */
     private final Set<String> habilidadesAdicionadas = new HashSet<>();
+    private final PerfilRepository perfilRepository = new PerfilRepository();
 
     @Nullable
     @Override
@@ -72,20 +78,26 @@ public class EditarHabilidadesFragment extends Fragment {
         setupCampoAdicionar(view);
         setupSugestoes();
         setupButtons(view);
-        prefillHabilidades();
+        carregarHabilidades();
     }
 
     private void applyWindowInsets(View view) {
-        ViewCompat.setOnApplyWindowInsetsListener(view.findViewById(R.id.header_habilidades), (v, insets) -> {
-            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(v.getPaddingLeft(), bars.top, v.getPaddingRight(), v.getPaddingBottom());
-            return insets;
-        });
-        ViewCompat.setOnApplyWindowInsetsListener(view.findViewById(R.id.footer_salvar), (v, insets) -> {
-            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), bars.bottom);
-            return insets;
-        });
+        View header = view.findViewById(R.id.header_habilidades);
+        if (header != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(header, (v, insets) -> {
+                Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(v.getPaddingLeft(), bars.top, v.getPaddingRight(), v.getPaddingBottom());
+                return insets;
+            });
+        }
+        View footer = view.findViewById(R.id.footer_salvar);
+        if (footer != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(footer, (v, insets) -> {
+                Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), bars.bottom);
+                return insets;
+            });
+        }
     }
 
     private void initViews(View view) {
@@ -96,6 +108,43 @@ public class EditarHabilidadesFragment extends Fragment {
         chipGroupSugestoesComportamentais = view.findViewById(R.id.chipgroup_sugestoes_comportamentais);
         layoutVazio = view.findViewById(R.id.layout_vazio);
     }
+
+    // ── Carregar habilidades do backend ───────────────────────────────────────
+
+    private void carregarHabilidades() {
+        setCarregando(true);
+        perfilRepository.buscarHabilidades(new PerfilRepository.HabilidadesCallback() {
+            @Override
+            public void onSucesso(List<HabilidadesResponse> lista) {
+                if (!isAdded()) return;
+                requireActivity().runOnUiThread(() -> {
+                    chipGroupHabilidades.removeAllViews();
+                    habilidadesAdicionadas.clear();
+                    for (HabilidadesResponse item : lista) {
+                        if (item.getNome() != null) {
+                            adicionarChipLocal(item.getNome());
+                            sincronizarSugestoes(item.getNome(), true);
+                        }
+                    }
+                    atualizarContadorEVazio();
+                    setCarregando(false);
+                });
+            }
+
+            @Override
+            public void onVazio() {
+                if (!isAdded()) return;
+                requireActivity().runOnUiThread(() -> {
+                    chipGroupHabilidades.removeAllViews();
+                    habilidadesAdicionadas.clear();
+                    atualizarContadorEVazio();
+                    setCarregando(false);
+                });
+            }
+        });
+    }
+
+    // ── Campo de input e botão adicionar ─────────────────────────────────────
 
     private void setupCampoAdicionar(View rootView) {
         MaterialButton btnAdicionar = rootView.findViewById(R.id.btn_adicionar);
@@ -127,34 +176,101 @@ public class EditarHabilidadesFragment extends Fragment {
         }
 
         String normalizado = capitalizar(texto);
-        if (!adicionarHabilidade(normalizado)) {
+        String chave = normalizado.toLowerCase(Locale.getDefault());
+
+        if (habilidadesAdicionadas.contains(chave)) {
             tilHabilidade.setError(getString(R.string.erro_habilidade_duplicada));
             return;
         }
 
         etHabilidade.setText("");
         esconderTeclado(rootView);
+
+        // Optimistic: adiciona chip localmente antes da resposta
+        adicionarChipLocal(normalizado);
         sincronizarSugestoes(normalizado, true);
+        atualizarContadorEVazio();
+
+        // Persiste no backend
+        perfilRepository.adicionarHabilidade(
+                new HabilidadesRequest(normalizado, null),
+                new PerfilRepository.PerfilCallback() {
+                    @Override
+                    public void onSuccess() {
+                        // já refletido localmente — nada a fazer
+                    }
+
+                    @Override
+                    public void onError(String mensagem) {
+                        if (!isAdded()) return;
+                        requireActivity().runOnUiThread(() -> {
+                            // Desfaz optimistic update
+                            removerChipLocal(normalizado);
+                            sincronizarSugestoes(normalizado, false);
+                            atualizarContadorEVazio();
+                            if (getView() != null) {
+                                Snackbar.make(requireView(), mensagem, Snackbar.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                });
     }
 
-    private boolean adicionarHabilidade(String nome) {
+    // ── Gestão local de chips ─────────────────────────────────────────────────
+
+    private void adicionarChipLocal(String nome) {
         String chave = nome.toLowerCase(Locale.getDefault());
-        if (habilidadesAdicionadas.contains(chave)) return false;
+        if (habilidadesAdicionadas.contains(chave)) return;
 
         habilidadesAdicionadas.add(chave);
 
         Chip chip = criarChipSelecionada(nome);
-        chip.setOnCloseIconClickListener(v -> {
-            chipGroupHabilidades.removeView(chip);
-            habilidadesAdicionadas.remove(chave);
-            sincronizarSugestoes(nome, false);
-            atualizarContadorEVazio();
-        });
-
+        chip.setOnCloseIconClickListener(v -> removerHabilidadeComAPI(chip, nome));
         chipGroupHabilidades.addView(chip);
-        atualizarContadorEVazio();
-        return true;
     }
+
+    private void removerChipLocal(String nome) {
+        String chave = nome.toLowerCase(Locale.getDefault());
+        habilidadesAdicionadas.remove(chave);
+
+        for (int i = 0; i < chipGroupHabilidades.getChildCount(); i++) {
+            Chip chip = (Chip) chipGroupHabilidades.getChildAt(i);
+            if (chip.getText().toString().toLowerCase(Locale.getDefault()).equals(chave)) {
+                chipGroupHabilidades.removeView(chip);
+                break;
+            }
+        }
+    }
+
+    private void removerHabilidadeComAPI(Chip chip, String nome) {
+        // Optimistic: remove chip imediatamente
+        String chave = nome.toLowerCase(Locale.getDefault());
+        chipGroupHabilidades.removeView(chip);
+        habilidadesAdicionadas.remove(chave);
+        sincronizarSugestoes(nome, false);
+        atualizarContadorEVazio();
+
+        perfilRepository.removerHabilidade(nome, new PerfilRepository.PerfilCallback() {
+            @Override
+            public void onSuccess() {
+                // já refletido localmente — nada a fazer
+            }
+
+            @Override
+            public void onError(String mensagem) {
+                if (!isAdded()) return;
+                requireActivity().runOnUiThread(() -> {
+                    // Desfaz: recarrega lista do servidor
+                    carregarHabilidades();
+                    if (getView() != null) {
+                        Snackbar.make(requireView(), mensagem, Snackbar.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
+    }
+
+    // ── Criação de chips ──────────────────────────────────────────────────────
 
     private Chip criarChipSelecionada(String nome) {
         Chip chip = new Chip(requireContext());
@@ -171,6 +287,8 @@ public class EditarHabilidadesFragment extends Fragment {
         chip.setCheckedIconVisible(false);
         return chip;
     }
+
+    // ── Sugestões ─────────────────────────────────────────────────────────────
 
     private void setupSugestoes() {
         for (String sugestao : SUGESTOES_TECNICAS) {
@@ -200,9 +318,34 @@ public class EditarHabilidadesFragment extends Fragment {
                         getString(R.string.erro_habilidade_limite), Snackbar.LENGTH_SHORT).show();
                 return;
             }
-            if (adicionarHabilidade(nome)) {
-                marcarSugestaoComoAdicionada(chip);
-            }
+            String chave = nome.toLowerCase(Locale.getDefault());
+            if (habilidadesAdicionadas.contains(chave)) return;
+
+            // Optimistic
+            adicionarChipLocal(nome);
+            marcarSugestaoComoAdicionada(chip);
+            atualizarContadorEVazio();
+
+            perfilRepository.adicionarHabilidade(
+                    new HabilidadesRequest(nome, null),
+                    new PerfilRepository.PerfilCallback() {
+                        @Override
+                        public void onSuccess() { /* refletido localmente */ }
+
+                        @Override
+                        public void onError(String mensagem) {
+                            if (!isAdded()) return;
+                            requireActivity().runOnUiThread(() -> {
+                                removerChipLocal(nome);
+                                desmarcarSugestao(chip);
+                                atualizarContadorEVazio();
+                                if (getView() != null) {
+                                    Snackbar.make(requireView(), mensagem,
+                                            Snackbar.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                    });
         });
         return chip;
     }
@@ -231,7 +374,8 @@ public class EditarHabilidadesFragment extends Fragment {
         sincronizarEmGrupo(chipGroupSugestoesComportamentais, SUGESTOES_COMPORTAMENTAIS, chave, adicionado);
     }
 
-    private void sincronizarEmGrupo(ChipGroup group, List<String> lista, String chave, boolean adicionado) {
+    private void sincronizarEmGrupo(ChipGroup group, List<String> lista,
+                                    String chave, boolean adicionado) {
         for (int i = 0; i < group.getChildCount(); i++) {
             Chip chip = (Chip) group.getChildAt(i);
             if (chip.getText().toString().toLowerCase(Locale.getDefault()).equals(chave)) {
@@ -242,30 +386,21 @@ public class EditarHabilidadesFragment extends Fragment {
         }
     }
 
+    // ── Botão voltar (cada operação já persiste individualmente) ─────────────
+
     private void setupButtons(View view) {
         view.findViewById(R.id.btn_voltar).setOnClickListener(v ->
                 NavHostFragment.findNavController(this).navigateUp());
 
-        view.findViewById(R.id.btn_salvar).setOnClickListener(v -> salvarHabilidades(view));
+        btnSalvar = view.findViewById(R.id.btn_salvar);
+        btnSalvar.setOnClickListener(v ->
+                NavHostFragment.findNavController(this).navigateUp());
     }
 
-    private void prefillHabilidades() {
-        List<String> iniciais = Arrays.asList("Java", "Android", "Git");
-        for (String h : iniciais) {
-            adicionarHabilidade(h);
-            sincronizarSugestoes(h, true);
-        }
-    }
+    // ── Contador e estado vazio ───────────────────────────────────────────────
 
-    private void salvarHabilidades(View rootView) {
-        if (habilidadesAdicionadas.isEmpty()) {
-            Snackbar.make(rootView,
-                    getString(R.string.erro_habilidades_minimo), Snackbar.LENGTH_SHORT).show();
-            return;
-        }
-        Snackbar.make(rootView,
-                getString(R.string.sucesso_habilidades_salvas), Snackbar.LENGTH_SHORT).show();
-        rootView.postDelayed(() -> NavHostFragment.findNavController(this).navigateUp(), 1200);
+    private void setCarregando(boolean carregando) {
+        if (btnSalvar != null) btnSalvar.setEnabled(!carregando);
     }
 
     private void atualizarContadorEVazio() {
@@ -279,6 +414,8 @@ public class EditarHabilidadesFragment extends Fragment {
         layoutVazio.setVisibility(total == 0 ? View.VISIBLE : View.GONE);
         chipGroupHabilidades.setVisibility(total == 0 ? View.GONE : View.VISIBLE);
     }
+
+    // ── Utilitários ───────────────────────────────────────────────────────────
 
     private void esconderTeclado(View view) {
         InputMethodManager imm = (InputMethodManager)
